@@ -3,7 +3,7 @@
 ## Author: SisCore
 ## Version: 0.1
 ## Notes: Allows you to chose which items to loot automatically
-## SavedVariables: ALAC,Test,RarityAL
+## SavedVariables: ALAC,AutoLootListDB
 
 embeds.xml
 

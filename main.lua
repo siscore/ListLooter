@@ -3,7 +3,6 @@ AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLoot", "AceConsole-3.0","AceEve
 local VerName = "0.1"
 local Disabled = false
 local isCancel = false
-local markRemove = {} 
 
 local options = {
 	type = "group",
@@ -65,7 +64,7 @@ function AutoLoot:BuildItemTree()
 		end
 	end
 	
-	local List = Test;
+	local List = AutoLootListDB;
 	
 	for i = 1, table.getn(List) ,1 do	
 		itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
@@ -146,9 +145,8 @@ function AutoLoot:OnEnable()
 	end
 
 function AutoLoot:PLAYER_ENTERING_WORLD()
-	Test = Test or {}
+	AutoLootListDB = AutoLootListDB or {}
 	ALAC = ALAC
-	markRemove = {} 
 end
 
 function AutoLoot:LFG_PROPOSAL_SUCCEEDED()
@@ -183,13 +181,13 @@ function AutoLoot:LOOT_OPENED()
 		
 		TestChecked = {}
 				
-		for c=1 ,(table.getn(Test)),1 do		
+		for c=1 ,(table.getn(AutoLootListDB)),1 do		
 			if lootQuantity == 0 then --Money
 				self:Print("|cFF00FF00 Current Slot:" .. lootName .. " is MONEY")
 				LootSlot(i)
 			end 
 			
-			if Test[c] == Id then
+			if AutoLootListDB[c] == Id then
 					self:Print("|cFF00FF00 Current Slot:|cFF186aa7" .. lootName .. "|cFF00FF00, Checked With:|cFF186aa7" .. Id .. "|cFF00FF00  (MATCHED)")
 					LootSlot(i)
 			end	
@@ -263,7 +261,7 @@ function AutoLoot:AddToList(input)
 		
 	if Id then 
 		self:Print("Item added: "..Id);
-		table.insert(Test,Id);
+		table.insert(AutoLootListDB,Id);
 	end
 end
  
@@ -274,24 +272,24 @@ end
 	
 	local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, reforging, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
 	
-	for c=1, table.getn(Test),1 do
-		if Id == Test[c] then
-			table.remove(Test, c)
+	for c=1, table.getn(AutoLootListDB),1 do
+		if Id == AutoLootListDB[c] then
+			table.remove(AutoLootListDB, c)
 			self:Print("|cFF00FF00 Removed " .. input .. " From Whitelist")
 		end
 	end
  end
  
 	function AutoLoot:RemoveAllFromList(input)
-		for c = table.getn(Test), 1, -1 do
-			table.remove(Test, c)
+		for c = table.getn(AutoLootListDB), 1, -1 do
+			table.remove(AutoLootListDB, c)
 			self:Print("|cFF00FF00 Removed " .. c .. " From Whitelist")
 		end
 	end
  
 	function AutoLoot:PrintList(input)
 		self:Print("|cFF00FF00 Here are the current Items in the Whitelist:")
-		for i = 1, table.getn(Test) ,1 do
-			self:Print("|cFF00FF00" .. Test[i]);
+		for i = 1, table.getn(AutoLootListDB) ,1 do
+			self:Print("|cFF00FF00" .. AutoLootListDB[i]);
 		end
  end
