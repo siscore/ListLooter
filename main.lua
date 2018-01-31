@@ -1,47 +1,75 @@
-AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLoot", "AceConsole-3.0","AceEvent-3.0")
+AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLootList", "AceConsole-3.0","AceEvent-3.0")
+local config = LibStub("AceConfig-3.0")
+local dialog = LibStub("AceConfigDialog-3.0")
 
-local VerName = "0.1"
-local Disabled = false
-local isCancel = false
+local VerName = "0.4b"
+local MainOptions
+local ProfilesOptions 
+local db
+
+local L = LibStub("AceLocale-3.0"):GetLocale("AutoLootList", false)
+
+local defaults = {
+	profile = {
+		enable = true,
+		autoclose = false,
+		automoney = true,
+		LootDB = {},
+	},
+}
 
 local options = {
 	type = "group",
-	name = "Options",
+	name = L["Options"],
 	args = 	{
 		isEnable =
 		{   
 		    order = 0,
 			type = "toggle",
-			name = "Enable AutoLoot",
+			name = L["Enable AutoLootList"],
 			width = "full",
-			desc = "Enable or disable addon",
+			desc = L["Enable or disable addon"],
 			get = function(info) 
 					AutoLoot:BuildItemTree();
-					return not Disabled 
+					return db.enable
 				  end,
 			set = function(info, value) 
-					Disabled = not value 
+					db.enable = value
+				  end,
+		},
+		AutoMoney =
+		{   
+		    order = 1,
+			type = "toggle",
+			name = L["Auto loot money"],
+			width = "full",
+			desc = L["Enable or disable auto loot money"],
+			get = function(info) 
+					return db.automoney
+				  end,
+			set = function(info, value) 
+					db.automoney = value 
 				  end,
 		},
 		AutoClose =
 		{   
-		    order = 1,
+		    order = 2,
 			type = "toggle",
-			name = "Auto close loot frame",
+			name = L["Auto close loot frame"],
 			width = "normal",
-			desc = "Enable or disable auto close loot frame",
+			desc = L["Enable or disable auto close loot frame"],
 			get = function(info) 
-					return ALAC
+					return db.autoclose
 				  end,
 			set = function(info, value) 
-					ALAC = value 
+					db.autoclose  = value 
 				  end,
 		},
 		addItem = {
-			order = 2,
+			order = 3,
 			type = "input",
 			width = "double",
-			name = "Add new Item ID:",
+			name = L["Add new Item ID:"],
 			set = function(info, value)
 				if value then 
 					local itemID = tonumber(value)
@@ -59,12 +87,12 @@ function AutoLoot:BuildItemTree()
 	--self:Print("begin BuildItemTree");
 	local itemsList = options.args
 	for item in pairs(itemsList) do
-		if item ~= "isEnable" and item ~= "addItem" and item ~= "removeAllItem" and item ~= "AutoClose" then
+		if item ~= "isEnable" and item ~= "addItem" and item ~= "removeAllItem" and item ~= "AutoClose" and item ~= "AutoMoney" then
 			itemsList[item] = nil
 		end
 	end
 	
-	local List = AutoLootListDB;
+	local List = db.LootDB;
 	
 	for i = 1, table.getn(List) ,1 do	
 		itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
@@ -87,14 +115,14 @@ function AutoLoot:BuildItemTree()
 					descItemID = {
 						order = 6,
 						type = "description",
-						name = "ItemID: "..List[i],
+						name = L["ItemID: "]..List[i],
 						width = "full",
 					},	
 					removeItem = {
 						order = 7,
 						width = "double",
 						type = "execute",
-						name = "Remove item "..itemLink,
+						name = L["Remove item "]..itemLink,
 						confirm = true,
 						func = function(info)
 									AutoLoot:RemoveFromList(List[i]);
@@ -105,12 +133,11 @@ function AutoLoot:BuildItemTree()
 						order = 8,
 						width = "double",
 						type = "execute",
-						name = "Clear all item list",
+						name = L["Clear all item list"],
 						confirm = true,
 						func = function(info)
 									AutoLoot:RemoveAllFromList(List[i]);
 									AutoLoot:BuildItemTree()
-									self:Print("Done");
 								end,
 					},
 			},
@@ -120,135 +147,148 @@ function AutoLoot:BuildItemTree()
 end
 
 function AutoLoot:OnInitialize()
-	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("AutoLootOptions", options)
-	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("AutoLootOptions", "AutoLoot Options")
-	self.db = LibStub("AceDB-3.0"):New("AutoLootDB",defaults,true)
+	self.db = LibStub("AceDB-3.0"):New("AutoLootListDB",defaults,true)
 	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileReset", "OnProfileChanged")
+	
+	db = self.db.profile
+	
+	config:RegisterOptionsTable("AutoLootOptions", options)
+	MainOptions = dialog:AddToBlizOptions("AutoLootOptions", "AutoLootList")
+
+	config:RegisterOptionsTable("AutoLootListProfiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db))
+	ProfilesOptions = dialog:AddToBlizOptions("AutoLootListProfiles", L["Profiles"], "AutoLootList")
+end
+
+function AutoLoot:OnProfileChanged()
+	db = self.db.profile;
+	AutoLoot:BuildItemTree();
 end
 
 function AutoLoot:OnEnable()
-	self:Print("Version " .. VerName .. " Loaded!")
+	self:Print(L["Version: "]..VerName)
 	AutoLoot:RegisterEvent("LOOT_OPENED")
-	AutoLoot:RegisterEvent("PLAYER_ENTERING_WORLD")
 	AutoLoot:RegisterEvent("LFG_PROPOSAL_SUCCEEDED")
-	AutoLoot:RegisterChatCommand("AL", "AutoLootTest")
-	AutoLoot:RegisterChatCommand("ALD", "AutoLootDisable")
-	AutoLoot:RegisterChatCommand("ALH", "AutoLootHelp")
-	AutoLoot:RegisterChatCommand("ALA", "AddToList")
-	AutoLoot:RegisterChatCommand("ALL", "PrintList")
-	AutoLoot:RegisterChatCommand("ALR", "RemoveFromList") 
-	AutoLoot:RegisterChatCommand("ALAC", "AutoListAutoClose") 
-	AutoLoot:RegisterChatCommand("ALUI", "AutoLootShowUI")
+	AutoLoot:RegisterChatCommand("ALLIST", "AutoLootSlashProcessorFunc")
 	AutoLoot:BuildItemTree();
 	end
 
-function AutoLoot:PLAYER_ENTERING_WORLD()
-	AutoLootListDB = AutoLootListDB or {}
-	ALAC = ALAC
-end
-
 function AutoLoot:LFG_PROPOSAL_SUCCEEDED()
-	Disabled = true
+	db.enabled = false
 	AutoLoot:UnregisterEvent("LOOT_OPENED")
-	self:Print("You Have entered a dungeon and therefore AutoLoot Has been disabled , it will re-enable on leaving the dungeon")
+	self:Print(L["You Have entered a dungeon and therefore AutoLoot Has been disabled , it will re-enable on leaving the dungeon"])
 	AutoLoot:RegisterEvent("LFG_COMPLETION_REWARD")
 end
 
 function AutoLoot:LFG_COMPLETION_REWARD()
-    Disabled = false
+    db.enabled = true
 	AutoLoot:RegisterEvent("LOOT_OPENED")
-	self:Print("You have exited the dungeon so AutoLoot has been enabled")
+	self:Print(L["You have exited the dungeon so AutoLoot has been enabled"])
 	AutoLoot:UnregisterEvent("LFG_COMPLETION_REWARD")
 end
 
 function AutoLoot:LOOT_OPENED()
-	local numLootItems = GetNumLootItems();
-	
-		self:Print("Loot Opened")
-	
-	for i= 1, numLootItems , 1 do
-		local lootIcon, lootName, lootQuantity, rarity, locked = GetLootSlotInfo(i);
+	if db.enable == true then 
+		local numLootItems = GetNumLootItems();
 		
-		itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
-		itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, 
-		isCraftingReagent = GetItemInfo(lootName);
-		
-		local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, reforging, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
-		
-		--self:Print("|cFF186aa7Check loot |cFF00FF00"..i.." |cFF186aa7name: |cFF00FF00"..itemName)
-		
-		TestChecked = {}
-				
-		for c=1 ,(table.getn(AutoLootListDB)),1 do		
-			if lootQuantity == 0 then --Money
-				self:Print("|cFF00FF00 Current Slot:" .. lootName .. " is MONEY")
-				LootSlot(i)
-			end 
+		for i= 1, numLootItems , 1 do
+			local lootIcon, lootName, lootQuantity, rarity, locked = GetLootSlotInfo(i);
 			
-			if AutoLootListDB[c] == Id then
-					self:Print("|cFF00FF00 Current Slot:|cFF186aa7" .. lootName .. "|cFF00FF00, Checked With:|cFF186aa7" .. Id .. "|cFF00FF00  (MATCHED)")
-					LootSlot(i)
-			end	
-		end
-		
-		if ALAC == true then
+			itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
+			itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, 
+			isCraftingReagent = GetItemInfo(lootName);
+								
+			for c=1, table.getn(db.LootDB), 1 do
+				if lootQuantity == 0 then
+					if db.automoney == true then
+						LootSlot(i)
+					end
+				else
+					local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, reforging, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+					
+					if db.LootDB[c] == Id then
+						itemIcon = GetItemIcon(Id) 
+						self:Print(L["Looted: "].."\124T"..itemIcon..":0\124t"..itemLink)
+						LootSlot(i)
+					end	
+				end
+			end
+			
+			if db.autoclose == true then
 				CloseLoot()
+			end
 		end
 	end
 end
 
 function AutoLoot:AutoLootDisable(input)
-	if Disabled == false then
-		Disabled = true
+	self:Print(">>>>"..input)
+	if db.enable == false and input == "yes" then
+		db.enable = true
 		AutoLoot:UnregisterEvent("LOOT_OPENED")
-		self:Print("Is Now Disabled!")
-	elseif Disabled == true then
-		Disabled = false
+		self:Print(L["Addon is Enabled!"])
+	elseif db.enable == true and input == "no" then
+		db.enable = false
 		AutoLoot:RegisterEvent("LOOT_OPENED")
-		self:Print("Is Now Enabled!")
+		self:Print(L["Addon is Disabled!"])
 	end
 end
 
-function AutoLoot:AutoLootTest(input)
-	self:Print("|cFF00FF00 Currently running Version " .. VerName)
-	self:Print("|cFF00FF00 Developed by Wicked7000")
+function AutoLoot:AutoLootSlashProcessorFunc(input)
+	local Args = {}
+	for token in string.gmatch(input, "[^%s]+") do
+	   table.insert(Args, token);
+	end
+	
+	if Args[1] == "" or Args[1] == nil then 
+		self:Print(L["|cFF00FF00 Currently running Version "] .. VerName)
+		InterfaceOptionsFrame_OpenToCategory(MainOptions)
+		InterfaceOptionsFrame_OpenToCategory(MainOptions)
+		InterfaceOptionsFrame_OpenToCategory(MainOptions)
+	elseif Args[1] == "-help" then AutoLoot:AutoLootPrintHelp()
+	elseif Args[1] == "-print" then AutoLoot:PrintList()
+	elseif Args[1] == "-add" then AutoLoot:AddToList(Args[2])
+	elseif Args[1] == "-rem" then AutoLoot:RemoveFromList(Args[2])
+	elseif Args[1] == "-autoclose" then AutoLoot:AutoListAutoClose(Args[2])
+	elseif Args[1] == "-enable" then AutoLoot:AutoLootDisable(Args[2])
+	else AutoLoot:AutoLootPrintHelp()
+	end
 end
 
-function AutoLoot:AutoLootHelp(input)
-	self:Print("/AL - Tells you the version of AutoLoot you are running")
-	self:Print("/ALH - (The Command you used to get this)")
-	self:Print("/ALL - Prints the White-list")
-	self:Print("/ALA <Item> - Add an item to the White-list (Don't use <>)")
-	self:Print("/ALR <Item> - Remove an item to the White-list (Don't use <>)")
-	self:Print("/ALAC (yes/no/print) - Change the setting for AutoLoot AutoClose (don't use ())")
-	self:Print("/ALD use to enabled and disable AutoLoot")
+function AutoLoot:AutoLootPrintHelp()
+	self:Print(L["/ALLIST - Tells you the version of AutoLootList and open options"])
+	self:Print(L["/ALLIST -help - Show help information"])
+	self:Print(L["/ALLIST -print - Prints the White-list"])
+	self:Print(L["/ALLIST -add <Item> - Add an item to the White-list (Don't use <>)"])
+	self:Print(L["/ALLIST -rem <Item> - Remove an item to the White-list (Don't use <>)"])
+	self:Print(L["/ALLIST -autoclose <yes/no> - Change the setting for AutoLoot AutoClose (don't use <>)"])
+	self:Print(L["/ALLIST -enable <yes/no> use to enabled and disable AutoLoot"])
 end
 
 function AutoLoot:AutoListAutoClose(input)
 	local boolString
 	
-	if ALAC == true then
+	if db.autoclose == true then
 		boolString = "true"
-	elseif ALAC == false then
+	elseif db.autoclose == false then
 		boolString = "false"
 	else
-		ALAC = false
+		db.autoclose = false
 		boolString = "false"
-		self:Print("|cFFFF0000 No Auto Close Setting , defaulting to false")
+		self:Print(L["|cFFFF0000 No Auto Close Setting , defaulting to false"])
 	end
 	
 	if input == "yes" then
-		ALAC  = true
-		self:Print("|cFF00FF00 AutoLoot Auto Close has been set to true")
+		db.autoclose  = true
+		self:Print(L["|cFF00FF00 AutoLoot Auto Close has been set to true"])
 	elseif input == "no" then
-		ALAC = false
-		self:Print("|cFF00FF00 AutoLoot Auto Close has been set to false")
+		db.autoclose = false
+		self:Print(L["|cFF00FF00 AutoLoot Auto Close has been set to false"])
 	elseif input == "print" then
-		self:Print("|cFF00FF00 The current setting for Auto Close is as follows: " .. boolString)
+		self:Print(L["|cFF00FF00 The current setting for Auto Close is as follows: "] .. boolString)
 	else 
-		self:Print("|cFFFF0000 Input not recognized please use: (yes) or (no)")
+		self:Print(L["|cFFFF0000 Input not recognized please use: (yes) or (no)"])
 	end
 end
 
@@ -260,8 +300,8 @@ function AutoLoot:AddToList(input)
 	local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, reforging, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
 		
 	if Id then 
-		self:Print("Item added: "..Id);
-		table.insert(AutoLootListDB,Id);
+		self:Print(L["Item added: "]..Id);
+		table.insert(db.LootDB,Id);
 	end
 end
  
@@ -272,24 +312,27 @@ end
 	
 	local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, reforging, Name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
 	
-	for c=1, table.getn(AutoLootListDB),1 do
-		if Id == AutoLootListDB[c] then
-			table.remove(AutoLootListDB, c)
-			self:Print("|cFF00FF00 Removed " .. input .. " From Whitelist")
+	for c=1, table.getn(db.LootDB),1 do
+		if Id == db.LootDB[c] then
+			table.remove(db.LootDB, c)
+			self:Print(L["|cFF00FF00 Removed from whitelist: "] .. input)
 		end
 	end
  end
  
 	function AutoLoot:RemoveAllFromList(input)
-		for c = table.getn(AutoLootListDB), 1, -1 do
-			table.remove(AutoLootListDB, c)
-			self:Print("|cFF00FF00 Removed " .. c .. " From Whitelist")
+		for c = table.getn(db.LootDB), 1, -1 do
+			table.remove(db.LootDB, c)
+			self:Print(L["|cFF00FF00 Removed from whitelist: "] .. c)
 		end
 	end
  
 	function AutoLoot:PrintList(input)
-		self:Print("|cFF00FF00 Here are the current Items in the Whitelist:")
-		for i = 1, table.getn(AutoLootListDB) ,1 do
-			self:Print("|cFF00FF00" .. AutoLootListDB[i]);
+		self:Print(L["|cFF00FF00 Here are the current Items in the Whitelist:"])
+		for i = 1, table.getn(db.LootDB) ,1 do
+			itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
+			itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, 
+			isCraftingReagent = GetItemInfo(db.LootDB[i]);
+			self:Print("|cFF00FF00" .. itemLink);
 		end
  end

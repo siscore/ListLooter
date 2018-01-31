@@ -1,0 +1,12 @@
+## Interface: 70300
+## Title: AutoLootList
+## Author: SisCore
+## Version: 0.4b
+## Notes: Allows you to chose which items to loot automatically
+## SavedVariables: AutoLootListDB
+
+embeds.xml
+
+Locales.xml
+
+main.lua
