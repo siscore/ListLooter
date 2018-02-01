@@ -352,7 +352,6 @@ function AutoLoot:BuildItemTree()
 end
 
 function AutoLoot:WaitForCache()
-	self:Print("waitForcache");
 	self:CancelAllTimers();
 	self:BuildItemTree();
 	LibStub("AceConfigRegistry-3.0"):NotifyChange("AutoLootOptions");
