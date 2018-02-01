@@ -1,7 +1,7 @@
 ## Interface: 70300
 ## Title: AutoLootList
 ## Author: SisCore
-## Version: 0.4b
+## Version: 0.4.1-beta
 ## Notes: Allows you to chose which items to loot automatically
 ## SavedVariables: AutoLootListDB
 
