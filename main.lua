@@ -2,7 +2,7 @@ AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLootList", "AceConsole-3.0","Ac
 local config = LibStub("AceConfig-3.0")
 local dialog = LibStub("AceConfigDialog-3.0")
 
-local VerName = "0.4.1-beta"
+local VerName = "0.4.2-beta"
 local MainOptions
 local ProfilesOptions 
 local db
@@ -240,9 +240,7 @@ function AutoLoot:AutoListAutoClose(input)
 end
 
 function AutoLoot:AddToList(input)
-	self:Print("In:"..input);
-	local itemName, itemLink = GetItemInfo(List[i]) 
-	self:Print("Try: "..input.." Result: "..itemLink);
+	local itemName, itemLink = GetItemInfo(input) 
 	
 	if itemLink ~= nil then 
 		local _, _, Id = string.find(itemLink, "item:(%d+):")
@@ -255,7 +253,7 @@ function AutoLoot:AddToList(input)
 end
  
  function AutoLoot:RemoveFromList(input)
-	local itemName, itemLink = GetItemInfo(List[i]) 
+	local itemName, itemLink = GetItemInfo(input) 
 	local _, _, Id = string.find(itemLink, "item:(%d+):")
 	
 	for c=1, table.getn(db.LootDB),1 do
