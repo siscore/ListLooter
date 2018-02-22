@@ -2,10 +2,11 @@ AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLootList", "AceConsole-3.0","Ac
 local config = LibStub("AceConfig-3.0")
 local dialog = LibStub("AceConfigDialog-3.0")
 
-local VerName = "0.4.2-beta"
+local VerName = "0.5.0-beta"
 local MainOptions
 local ProfilesOptions 
 local db
+local questItemsDB = {}
 
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoLootList", false)
 
@@ -14,6 +15,8 @@ local defaults = {
 		enable = true,
 		autoclose = false,
 		automoney = true,
+		autoquestitems = false,
+		loglevel = 2,
 		LootDB = {},
 	},
 }
@@ -22,9 +25,15 @@ local options = {
 	type = "group",
 	name = L["Options"],
 	args = 	{
+		headerGroup1 =
+		{
+			order = 0,
+			type = "header",
+			name = L["Main settings"],
+		},
 		isEnable =
 		{   
-		    order = 0,
+		    order = 1,
 			type = "toggle",
 			name = L["Enable AutoLootList"],
 			width = "full",
@@ -39,7 +48,7 @@ local options = {
 		},
 		AutoMoney =
 		{   
-		    order = 1,
+		    order = 2,
 			type = "toggle",
 			name = L["Auto loot money"],
 			width = "full",
@@ -51,12 +60,27 @@ local options = {
 					db.automoney = value 
 				  end,
 		},
+		AutoQuestItems =
+		{   
+		    order = 3,
+			type = "toggle",
+			name = L["Auto loot quest items"],
+			width = "full",
+			desc = L["Enable or disable auto loot quest items"],
+			get = function(info) 
+					return db.autoquestitems
+				  end,
+			set = function(info, value) 
+					db.autoquestitems = value 
+					AutoLoot:CreateQuestItemsDB()
+				  end,
+		},
 		AutoClose =
 		{   
-		    order = 2,
+		    order = 4,
 			type = "toggle",
 			name = L["Auto close loot frame"],
-			width = "normal",
+			width = "full",
 			desc = L["Enable or disable auto close loot frame"],
 			get = function(info) 
 					return db.autoclose
@@ -65,10 +89,41 @@ local options = {
 					db.autoclose  = value 
 				  end,
 		},
+		headerGroup2 =
+		{
+			order = 5,
+			type = "header",
+			name = L["Logs settings"],
+		},
+		LogLevel = 
+		{
+			order = 6,
+			type = "select",
+			style = "dropdown",
+			name = L["Chat logs level"],
+			values = {
+				L["None"],
+				L["Settings"],
+				L["All"],
+			},
+			get = function(info)
+					return db.loglevel
+				  end,
+			set = function(info, value)
+				  	db.loglevel = value
+				  end,
+		}
+	},
+}
+
+local itemsConfig = {
+	type = "group",
+	name = L["Items list"],
+	args = 	{
 		addItem = {
-			order = 3,
+			order = 1,
 			type = "input",
-			width = "double",
+			width = "full",
 			name = L["Add new Item ID:"],
 			set = function(info, value)
 				if value then 
@@ -80,6 +135,9 @@ local options = {
 				end
 			end,
 		},
+	get = function() 
+				AutoLoot:BuildItemTree();
+		  end,
 	},
 }
 
@@ -93,7 +151,10 @@ function AutoLoot:OnInitialize()
 	
 	config:RegisterOptionsTable("AutoLootOptions", options)
 	MainOptions = dialog:AddToBlizOptions("AutoLootOptions", "AutoLootList")
-
+	
+	config:RegisterOptionsTable("AutoLootListItemsConfig", itemsConfig)
+	ProfilesOptions = dialog:AddToBlizOptions("AutoLootListItemsConfig", L["Items list"], "AutoLootList")
+	
 	config:RegisterOptionsTable("AutoLootListProfiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db))
 	ProfilesOptions = dialog:AddToBlizOptions("AutoLootListProfiles", L["Profiles"], "AutoLootList")
 end
@@ -108,25 +169,36 @@ function AutoLoot:OnEnable()
 	AutoLoot:RegisterEvent("LOOT_OPENED")
 	AutoLoot:RegisterEvent("LFG_PROPOSAL_SUCCEEDED")
 	AutoLoot:RegisterChatCommand("ALLIST", "AutoLootSlashProcessorFunc")
+	AutoLoot:RegisterEvent("QUEST_LOG_UPDATE")
 end
 
-function AutoLoot:GET_ITEM_INFO_RECEIVED()
-	self:Print("Item ready");
-	AutoLoot:UnregisterEvent("GET_ITEM_INFO_RECEIVED");
-	self:BuildItemTree();
+function AutoLoot:QUEST_LOG_UPDATE()
+	AutoLoot:UnregisterEvent("QUEST_LOG_UPDATE")
+	AutoLoot:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
+	AutoLoot:CreateQuestItemsDB()
+end
+
+function AutoLoot:UNIT_QUEST_LOG_CHANGED(unitId)
+	if unitId == "player" then
+		AutoLoot:CreateQuestItemsDB()
+	end
 end
 
 function AutoLoot:LFG_PROPOSAL_SUCCEEDED()
 	db.enabled = false
 	AutoLoot:UnregisterEvent("LOOT_OPENED")
-	self:Print(L["You Have entered a dungeon and therefore AutoLoot Has been disabled , it will re-enable on leaving the dungeon"])
+	if db.loglevel >= 2 then
+		self:Print(L["You Have entered a dungeon and therefore AutoLoot Has been disabled , it will re-enable on leaving the dungeon"])
+	end
 	AutoLoot:RegisterEvent("LFG_COMPLETION_REWARD")
 end
 
 function AutoLoot:LFG_COMPLETION_REWARD()
     db.enabled = true
 	AutoLoot:RegisterEvent("LOOT_OPENED")
-	self:Print(L["You have exited the dungeon so AutoLoot has been enabled"])
+	if db.loglevel >= 2 then
+		self:Print(L["You have exited the dungeon so AutoLoot has been enabled"])
+	end
 	AutoLoot:UnregisterEvent("LFG_COMPLETION_REWARD")
 end
 
@@ -146,12 +218,28 @@ function AutoLoot:LOOT_OPENED()
 				if itemLink ~= nil then 
 					local _, _, Id = string.find(itemLink, "item:(%d+):")
 					if db.LootDB[c] == Id then
-						itemIcon = GetItemIcon(Id) 
-						self:Print(L["Looted: "].."\124T"..itemIcon..":0\124t"..itemLink)
+						itemIcon = GetItemIcon(Id)
+						if db.loglevel > 2 then 
+							self:Print(L["Looted: "].."\124T"..itemIcon..":0\124t"..itemLink)
+						end
 						LootSlot(i)
 					end
 				end
 			end
+			
+			if db.autoquestitems == true then 
+				for c = 1, table.getn(questItemsDB), 1 do
+					local _, lootName = GetLootSlotInfo(i);
+					if lootName ~= nil then 
+						if questItemsDB[c] == lootName then 
+							if db.loglevel > 2 then 
+								self:Print(L["Looted: "].."\124T"..itemIcon..":0\124t"..itemLink)
+							end
+							LootSlot(i)
+						end 
+					end
+				end
+			end 
 		end
 		if db.autoclose == true then
 			CloseLoot()
@@ -163,11 +251,15 @@ function AutoLoot:AutoLootDisable(input)
 	if db.enable == false and input == "yes" then
 		db.enable = true
 		AutoLoot:UnregisterEvent("LOOT_OPENED")
-		self:Print(L["Addon is Enabled!"])
+		if db.loglevel >= 2 then 
+			self:Print(L["Addon is Enabled!"])
+		end
 	elseif db.enable == true and input == "no" then
 		db.enable = false
 		AutoLoot:RegisterEvent("LOOT_OPENED")
-		self:Print(L["Addon is Disabled!"])
+		if db.loglevel >= 2 then 
+			self:Print(L["Addon is Disabled!"])
+		end
 	end
 end
 
@@ -194,6 +286,7 @@ function AutoLoot:AutoLootSlashProcessorFunc(input)
 		InterfaceOptionsFrame_OpenToCategory(MainOptions)
 	elseif Args[1] == "-help" then AutoLoot:AutoLootPrintHelp()
 	elseif Args[1] == "-print" then AutoLoot:PrintList()
+	elseif Args[1] == "-printq" then AutoLoot:PrintQuestList()
 	elseif Args[1] == "-add" then AutoLoot:AddToList(params)
 	elseif Args[1] == "-rem" then AutoLoot:RemoveFromList(params)
 	elseif Args[1] == "-autoclose" then AutoLoot:AutoListAutoClose(params)
@@ -223,19 +316,29 @@ function AutoLoot:AutoListAutoClose(input)
 	else
 		db.autoclose = false
 		boolString = "false"
-		self:Print(L["|cFFFF0000 No Auto Close Setting , defaulting to false"])
+		if db.loglevel >= 2 then 
+			self:Print(L["|cFFFF0000 No Auto Close Setting , defaulting to false"])
+		end
 	end
 	
 	if input == "yes" then
 		db.autoclose  = true
-		self:Print(L["|cFF00FF00 AutoLoot Auto Close has been set to true"])
+		if db.loglevel >= 2 then 
+			self:Print(L["|cFF00FF00 AutoLoot Auto Close has been set to true"])
+		end
 	elseif input == "no" then
 		db.autoclose = false
-		self:Print(L["|cFF00FF00 AutoLoot Auto Close has been set to false"])
+		if db.loglevel >= 2 then 
+			self:Print(L["|cFF00FF00 AutoLoot Auto Close has been set to false"])
+		end
 	elseif input == "print" then
-		self:Print(L["|cFF00FF00 The current setting for Auto Close is as follows: "] .. boolString)
-	else 
-		self:Print(L["|cFFFF0000 Input not recognized please use: (yes) or (no)"])
+		if db.loglevel >= 2 then 
+			self:Print(L["|cFF00FF00 The current setting for Auto Close is as follows: "] .. boolString)
+		end
+	else
+		if db.loglevel >= 2 then 
+			self:Print(L["|cFFFF0000 Input not recognized please use: (yes) or (no)"])
+		end
 	end
 end
 
@@ -246,7 +349,9 @@ function AutoLoot:AddToList(input)
 		local _, _, Id = string.find(itemLink, "item:(%d+):")
 			
 		if Id then 
-			self:Print(L["Item added: "]..Id);
+			if db.loglevel > 2 then 
+				self:Print(L["Item added: "]..Id);
+			end
 			table.insert(db.LootDB,Id);
 		end
 	end
@@ -259,7 +364,9 @@ end
 	for c=1, table.getn(db.LootDB),1 do
 		if Id == db.LootDB[c] then
 			table.remove(db.LootDB, c)
-			self:Print(L["|cFF00FF00 Removed from whitelist: "] .. input)
+			if db.loglevel > 2 then 
+				self:Print(L["|cFF00FF00 Removed from whitelist: "] .. input)
+			end
 		end
 	end
  end
@@ -267,7 +374,9 @@ end
 function AutoLoot:RemoveAllFromList(input)
 	for c = table.getn(db.LootDB), 1, -1 do
 		table.remove(db.LootDB, c)
-		self:Print(L["|cFF00FF00 Removed from whitelist: "] .. c)
+		if db.loglevel > 2 then 
+			self:Print(L["|cFF00FF00 Removed from whitelist: "] .. c)
+		end
 	end
 end
 
@@ -281,9 +390,15 @@ function AutoLoot:PrintList(input)
 	end
 end
 
+function AutoLoot:PrintQuestList(input)
+	self:Print(L["|cFF00FF00 Here are the current Items in the Whitelist:"])
+	for i = 1, table.getn(questItemsDB) ,1 do
+		self:Print("|cFF00FF00" .. questItemsDB[i]);
+	end
+end
+
 function AutoLoot:BuildItemTree()
-	--self:Print("begin BuildItemTree");
-	local itemsList = options.args
+	local itemsList = itemsConfig.args
 	for item in pairs(itemsList) do
 		if item ~= "isEnable" and item ~= "addItem" and item ~= "removeAllItem" and item ~= "AutoClose" and item ~= "AutoMoney" then
 			itemsList[item] = nil
@@ -309,20 +424,20 @@ function AutoLoot:BuildItemTree()
 			width = "full",
 			args = {
 					descItemName = {
-						order = 5,
+						order = 11,
 						type = "description",
 						name = "\124T"..itemIcon..":0\124t".." "..itemName,
 						fontSize = "large",
 						width = "full",
 					},
 					descItemID = {
-						order = 6,
+						order = 12,
 						type = "description",
 						name = L["ItemID: "]..List[i],
 						width = "full",
 					},	
 					removeItem = {
-						order = 7,
+						order = 13,
 						width = "double",
 						type = "execute",
 						name = L["Remove item "]..itemName,
@@ -333,7 +448,7 @@ function AutoLoot:BuildItemTree()
 							end,
 					},
 					removeAllItem = {
-						order = 8,
+						order = 14,
 						width = "double",
 						type = "execute",
 						name = L["Clear all item list"],
@@ -346,7 +461,6 @@ function AutoLoot:BuildItemTree()
 			},
 		}
 	end
-	--self:Print("end BuildItemTree");
 end
 
 function AutoLoot:WaitForCache()
@@ -354,3 +468,20 @@ function AutoLoot:WaitForCache()
 	self:BuildItemTree();
 	LibStub("AceConfigRegistry-3.0"):NotifyChange("AutoLootOptions");
 end
+
+function AutoLoot:CreateQuestItemsDB()
+	questItemsDB = {}
+	if db.autoquestitems then 
+		for questIndex = 1, GetNumQuestLogEntries() do
+			for boardIndex = 1, GetNumQuestLeaderBoards(questIndex) do
+				local leaderboardTxt, boardItemType, isDone = GetQuestLogLeaderBoard(boardIndex, questIndex)
+				if not isDone and boardItemType == "item" then
+					local _, _, itemName = string.find(leaderboardTxt, "(.*):%s*([%d]+)%s*/%s*([%d]+)");		
+					if itemName then
+						table.insert(questItemsDB,itemName);
+					end
+				end
+			end
+		end
+	end
+end 
