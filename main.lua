@@ -2,7 +2,7 @@ AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLootList", "AceConsole-3.0","Ac
 local config = LibStub("AceConfig-3.0")
 local dialog = LibStub("AceConfigDialog-3.0")
 
-local VerName = "0.5.1-beta"
+local VerName = "1.0.0-release"
 local MainOptions
 local ProfilesOptions 
 local db
@@ -71,7 +71,6 @@ local options = {
 				  end,
 			set = function(info, value) 
 					db.autoquestitems = value 
-					AutoLoot:CreateQuestItemsDB()
 				  end,
 		},
 		AutoClose =
