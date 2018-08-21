@@ -2,7 +2,7 @@ AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLootList", "AceConsole-3.0","Ac
 local config = LibStub("AceConfig-3.0")
 local dialog = LibStub("AceConfigDialog-3.0")
 
-local VerName = "1.0.0-release"
+local VerName = "1.0.1-release"
 local MainOptions
 local ProfilesOptions 
 local db
@@ -193,9 +193,18 @@ function AutoLoot:LOOT_OPENED()
 		for i= 1, numLootItems , 1 do
 			local itemLink = GetLootSlotLink(i)
 					
-			if (GetLootSlotType(i) == LOOT_SLOT_MONEY) or (GetLootSlotType(i) == LOOT_SLOT_CURRENCY) then
-				if db.automoney == true then
+			if db.automoney == true then
+				local _, lootName, _, currencyID, _, _, isQuestItem = GetLootSlotInfo(i);
+				if currencyID ~= nil and GetLootSlotType(i) ~= LOOT_SLOT_MONEY then
 					LootSlot(i)
+					if db.loglevel > 2 then
+						self:Print(L["Looted: "]..lootName.." as currency")
+					end
+				elseif currencyID == nil and GetLootSlotType(i) == LOOT_SLOT_MONEY then
+					LootSlot(i)
+					if db.loglevel > 2 then
+						self:Print(L["Looted: "]..lootName.." as money")
+					end
 				end
 			end
 				
@@ -213,9 +222,11 @@ function AutoLoot:LOOT_OPENED()
 			end
 			
 			if db.autoquestitems == true then 
-				local _, lootName, _, _, _, isQuestItem = GetLootSlotInfo(i);
+				local _, lootName, _, _, _, _, isQuestItem = GetLootSlotInfo(i);
 				if isQuestItem == true then 
 					if db.loglevel > 2 then 
+						local _, _, Id = string.find(itemLink, "item:(%d+):")
+						itemIcon = GetItemIcon(Id)
 						self:Print(L["Looted: "].."\124T"..itemIcon..":0\124t"..itemLink)
 					end
 					LootSlot(i)
