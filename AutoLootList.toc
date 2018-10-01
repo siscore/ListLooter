@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: AutoLootList
 ## Author: SisCore
-## Version: 1.0.1-release
+## Version: 1.0.3-release
 ## Notes: Allows you to chose which items to loot automatically
 ## SavedVariables: AutoLootListDB
 

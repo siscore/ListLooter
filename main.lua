@@ -2,10 +2,13 @@ AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLootList", "AceConsole-3.0","Ac
 local config = LibStub("AceConfig-3.0")
 local dialog = LibStub("AceConfigDialog-3.0")
 
-local VerName = "1.0.2-release"
+local VerName = "1.0.3-release"
 local MainOptions
 local ProfilesOptions 
 local db
+
+local reAdd = false
+local reRemove = false
 
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoLootList", false)
 
@@ -166,7 +169,28 @@ function AutoLoot:OnEnable()
 	self:Print(L["Version: "]..VerName)
 	AutoLoot:RegisterEvent("LOOT_OPENED")
 	AutoLoot:RegisterEvent("LFG_PROPOSAL_SUCCEEDED")
+	AutoLoot:RegisterEvent("GET_ITEM_INFO_RECEIVED", "GET_ITEM_INFO_RECEIVED")
 	AutoLoot:RegisterChatCommand("ALLIST", "AutoLootSlashProcessorFunc")
+end
+
+function AutoLoot:GET_ITEM_INFO_RECEIVED(event, arg1)
+	if db.loglevel > 2 then
+		self:Print("ITEM INFO SERVER RESPONSE RECEIVED ("..arg1..")")
+	end
+	
+	if reAdd then 
+		AutoLoot:AddToList(arg1);
+		self:ScheduleTimer("WaitForCache", 1)
+		AutoLoot:BuildItemTree();
+		reAdd = false
+	end
+	
+	if reRemove then 
+		AutoLoot:RemoveFromList(arg1);
+		self:ScheduleTimer("WaitForCache", 1)
+		AutoLoot:BuildItemTree();
+		reRemove = false
+	end
 end
 
 function AutoLoot:LFG_PROPOSAL_SUCCEEDED()
@@ -335,8 +359,8 @@ function AutoLoot:AutoListAutoClose(input)
 end
 
 function AutoLoot:AddToList(input)
-	local itemName, itemLink = GetItemInfo(input) 
-	
+	local _, itemLink = GetItemInfo(input) 
+		
 	if itemLink ~= nil then 
 		local _, _, Id = string.find(itemLink, "item:(%d+):")
 			
@@ -346,21 +370,28 @@ function AutoLoot:AddToList(input)
 			end
 			table.insert(db.LootDB,Id);
 		end
+	else
+		reAdd = true 
 	end
 end
  
  function AutoLoot:RemoveFromList(input)
-	local itemName, itemLink = GetItemInfo(input) 
-	local _, _, Id = string.find(itemLink, "item:(%d+):")
+	local _, itemLink = GetItemInfo(input) 
 	
-	for c=1, table.getn(db.LootDB),1 do
-		if Id == db.LootDB[c] then
-			table.remove(db.LootDB, c)
-			if db.loglevel > 2 then 
-				self:Print(L["|cFF00FF00 Removed from whitelist: "] .. input)
+	if itemLink ~= nil then 
+		local _, _, Id = string.find(itemLink, "item:(%d+):")
+		
+		for c=1, table.getn(db.LootDB),1 do
+			if Id == db.LootDB[c] then
+				table.remove(db.LootDB, c)
+				if db.loglevel > 2 then 
+					self:Print(L["|cFF00FF00 Removed from whitelist: "] .. input)
+				end
 			end
 		end
-	end
+	else
+		reRemove = true
+	end 
  end
  
 function AutoLoot:RemoveAllFromList(input)
