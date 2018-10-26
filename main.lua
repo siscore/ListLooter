@@ -2,6 +2,9 @@ AutoLoot = LibStub("AceAddon-3.0"):NewAddon("AutoLootList", "AceConsole-3.0","Ac
 local config = LibStub("AceConfig-3.0")
 local dialog = LibStub("AceConfigDialog-3.0")
 
+local icon = '|TInterface\\Addons\\AutoLootList\\Art\\Main Icon:13:13:0:0:128:128:10:118:10:118|t '
+local mainOptionName = icon..'AutoLootList'
+
 local VerName = "1.0.3-release"
 local MainOptions
 local ProfilesOptions 
@@ -25,7 +28,7 @@ local defaults = {
 
 local options = {
 	type = "group",
-	name = L["Options"],
+	name = icon..L["Options"],
 	args = 	{
 		headerGroup1 =
 		{
@@ -151,13 +154,13 @@ function AutoLoot:OnInitialize()
 	db = self.db.profile
 	
 	config:RegisterOptionsTable("AutoLootOptions", options)
-	MainOptions = dialog:AddToBlizOptions("AutoLootOptions", "AutoLootList")
+	MainOptions = dialog:AddToBlizOptions("AutoLootOptions", mainOptionName)
 	
 	config:RegisterOptionsTable("AutoLootListItemsConfig", itemsConfig)
-	ProfilesOptions = dialog:AddToBlizOptions("AutoLootListItemsConfig", L["Items list"], "AutoLootList")
+	ProfilesOptions = dialog:AddToBlizOptions("AutoLootListItemsConfig", L["Items list"], mainOptionName)
 	
 	config:RegisterOptionsTable("AutoLootListProfiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db))
-	ProfilesOptions = dialog:AddToBlizOptions("AutoLootListProfiles", L["Profiles"], "AutoLootList")
+	ProfilesOptions = dialog:AddToBlizOptions("AutoLootListProfiles", L["Profiles"], mainOptionName)
 end
 
 function AutoLoot:OnProfileChanged()
