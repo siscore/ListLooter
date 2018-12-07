@@ -1,0 +1,10 @@
+## Interface: 80000
+## Title: |cff00ccffList Looter|r
+## Author: SisCore
+## DefaultState: enabled
+## SavedVariables: ListLooterDB
+
+localization.lua
+config.lua
+timer.lua
+init.lua
