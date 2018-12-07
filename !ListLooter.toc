@@ -1,6 +1,7 @@
 ## Interface: 80000
 ## Title: |cff00ccffList Looter|r
 ## Author: SisCore
+## Version: a2.0
 ## DefaultState: enabled
 ## SavedVariables: ListLooterDB
 
