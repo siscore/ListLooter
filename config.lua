@@ -265,7 +265,6 @@ function Config:CreateMenu()
 	--ListLooterDB = nil;
 
 	if ListLooterDB == nil then
-		print("new Lo")
 		ListLooterDB = {};
 		ListLooterDB.settings = {
 			isEnable = defaults.settings.isEnable, 

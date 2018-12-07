@@ -7,5 +7,4 @@
 
 localization.lua
 config.lua
-timer.lua
 init.lua
