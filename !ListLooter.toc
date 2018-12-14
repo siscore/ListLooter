@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: |cff00ccffList Looter|r
 ## Author: SisCore
 ## Version: a2.01
