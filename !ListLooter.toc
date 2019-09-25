@@ -1,7 +1,7 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: |cff00ccffList Looter|r
 ## Author: SisCore
-## Version: a2.01
+## Version: r2.03
 ## DefaultState: enabled
 ## SavedVariables: ListLooterDB
 ## X-Curse-Packaged-Version: a2.0
