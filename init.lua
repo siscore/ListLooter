@@ -106,31 +106,40 @@ function core:Loot()
 		for i= 1, numLootItems , 1 do
 			local itemLink = GetLootSlotLink(i)
 			local _, lootName, _, currencyID, _, _, isQuestItem = GetLootSlotInfo(i);
-			local lootSlotType = GetLootSlotType(i);
-			
-			if config.isCurrency == true then
+			local ifLooted = false;
+						
+			if (config.isCurrency == true and not ifLooted) then
+				local lootSlotType = GetLootSlotType(i);
 				if currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
 					LootSlot(i)
+					ifLooted = true;
 				elseif currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
 					LootSlot(i)
+					ifLooted = true;
 				end
 			end
-				
-			for c=1, table.getn(db), 1 do
-				if itemLink ~= nil then 
-					local _, _, Id = string.find(itemLink, "item:(%d+):")
-					if db[c] == Id then
-						LootSlot(i)
+			
+			if (config.isQuestItem == true and not ifLooted) then 
+				if isQuestItem == true then 
+					LootSlot(i)
+					ifLooted = true;
+				end 
+			end
+			
+			if (not ifLooted) then 
+				for c=1, table.getn(db), 1 do
+					if itemLink ~= nil then 
+						local _, _, Id = string.find(itemLink, "item:(%d+):")
+						if db[c] == Id then
+							LootSlot(i)
+							ifLooted = true;
+							break
+						end
 					end
 				end
 			end
-			
-			if config.isQuestItem == true then 
-				if isQuestItem == true then 
-					LootSlot(i)
-				end 
-			end 
 		end
+		
 		if config.isAfterClose == true then
 			CloseLoot()
 		end
