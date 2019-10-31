@@ -113,8 +113,11 @@ function Frame:CreateLootFrame()
 end 
 
 function Frame:ShowLootFrame()
-	local frame = UIFrame or Frame:CreateLootFrame();
-	frame:SetShown(not frame:IsShown());	
+	local lootExist = (table.getn(Loot) > 0);
+	if (lootExist) then 
+		local frame = UIFrame or Frame:CreateLootFrame();
+		frame:SetShown(not frame:IsShown());
+	end 	
 end 
 
 function Frame:AddItemToLoot(...)
@@ -127,7 +130,10 @@ function Frame:LootItem(self, button)
 end 
 
 function Frame:LootClosed()
-	Loot = {};
-	UIFrame:Hide();
-	UIFrame = nil;
+	local lootExist = (table.getn(Loot) > 0);
+	if (lootExist) then 
+		Loot = {};
+		UIFrame:SetShown(false);
+		UIFrame = nil;
+	end
 end

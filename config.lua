@@ -16,7 +16,8 @@ local defaults = {
 		isCurrency = false,
 		isQuestItem = false,
 		isAfterClose = false,
-		isMinimap = false
+		isMinimap = false,
+		isLootFrame = false
 	},
 	theme = {
 		r = 0, 
@@ -326,6 +327,15 @@ function Config:CreateMenu()
 	UIConfig.cbAfterClose:SetChecked(ListLooterDB.settings.isAfterClose);
     UIConfig.cbAfterClose:SetScript("OnClick", function(self, button, down) 
 												ListLooterDB.settings.isAfterClose = self:GetChecked() and true or false;
+										   end);
+										   
+   -- Check Button 5:
+	UIConfig.cbLootFrame = CreateFrame("CheckButton", nil, UIConfig, "UICheckButtonTemplate");
+	UIConfig.cbLootFrame:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", 0, -5);
+	UIConfig.cbLootFrame.text:SetText("Loot frame (debug version)");
+	UIConfig.cbLootFrame:SetChecked(ListLooterDB.settings.isLootFrame);
+    UIConfig.cbLootFrame:SetScript("OnClick", function(self, button, down) 
+												ListLooterDB.settings.isLootFrame = self:GetChecked() and true or false;
 										   end);
 	
 	InterfaceOptions_AddCategory(UIConfig);

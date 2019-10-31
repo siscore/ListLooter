@@ -89,8 +89,11 @@ function core:init(event, name)
 		core:Loot();
 	end
 	
-	if (event == "LOOT_CLOSED") then 
-		core.Frame.LootClosed();
+	if (event == "LOOT_CLOSED") then
+		local config = core.Config:GetSettings();
+		if (config.isLootFrame) then
+			core.Frame.LootClosed();
+		end
 	end
 end
 
@@ -136,7 +139,7 @@ function core:Loot()
 				end
 			end
 			
-			if (not ifLooted) then 
+			if (config.isLootFrame and not ifLooted) then 
 				core.Frame.AddItemToLoot("LootId", i);
 			end 
 		end
@@ -145,7 +148,9 @@ function core:Loot()
 			CloseLoot()
 		end
 		
-		core.Frame.ShowLootFrame();
+		if (config.isLootFrame) then 
+			core.Frame.ShowLootFrame();
+		end
 	end
 end 
 
