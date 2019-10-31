@@ -5,6 +5,7 @@ local _, core = ...; -- Namespace
 --------------------------------------
 core.commands = {
 	["config"] = core.Config.ToggleConfig, -- this is a function (no knowledge of Config object)
+	["d"] = core.Frame.DebugFrame, -- show loot debug frame
 	
 	["help"] = function()
 		print(" ");
@@ -13,17 +14,10 @@ core.commands = {
 		core:Print("|cff00cc66/ll help|r - shows help info");
 		print(" ");
 	end,
-	
-	["example"] = {
-		["test"] = function(...)
-			core:Print("My Value:", tostringall(...));
-		end
-	}
 };
 
 local function HandleSlashCommands(str)	
 	if (#str == 0) then	
-		-- User just entered "/at" with no additional args.
 		core.commands.help();
 		return;		
 	end	
@@ -36,8 +30,8 @@ local function HandleSlashCommands(str)
 	end
 	
 	local path = core.commands; -- required for updating found table.
-	
 	for id, arg in ipairs(args) do
+		
 		if (#arg > 0) then -- if string length is greater than 0.
 			arg = arg:lower();			
 			if (path[arg]) then
@@ -49,7 +43,6 @@ local function HandleSlashCommands(str)
 					path = path[arg]; -- another sub-table found!
 				end
 			else
-				-- does not exist!
 				core.commands.help();
 				return;
 			end
@@ -86,7 +79,7 @@ function core:init(event, name)
 
 		SLASH_ListLooter1 = "/ll";
 		SlashCmdList.ListLooter = HandleSlashCommands;
-		
+				
 		core.Config.Toggle();
 		
 		core:Print(L_WELCOMEBACK, UnitName("player").."!");
@@ -94,6 +87,10 @@ function core:init(event, name)
 	
 	if (event == "LOOT_OPENED") then 
 		core:Loot();
+	end
+	
+	if (event == "LOOT_CLOSED") then 
+		core.Frame.LootClosed();
 	end
 end
 
@@ -103,11 +100,11 @@ function core:Loot()
 	local db = core.Config:GetLootDB();
 	if config.isEnable == true then
 		local numLootItems = GetNumLootItems();
-		for i= 1, numLootItems , 1 do
+		for i = 1, numLootItems, 1 do
 			local itemLink = GetLootSlotLink(i)
-			local _, lootName, _, currencyID, _, _, isQuestItem = GetLootSlotInfo(i);
+			local lootIcon, lootName, lootQuantity, currencyID, lootQuality, locked, isQuestItem, questID, isActive = GetLootSlotInfo(i);
 			local ifLooted = false;
-						
+			
 			if (config.isCurrency == true and not ifLooted) then
 				local lootSlotType = GetLootSlotType(i);
 				if currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
@@ -138,15 +135,22 @@ function core:Loot()
 					end
 				end
 			end
+			
+			if (not ifLooted) then 
+				core.Frame.AddItemToLoot("LootId", i);
+			end 
 		end
 		
 		if config.isAfterClose == true then
 			CloseLoot()
 		end
+		
+		core.Frame.ShowLootFrame();
 	end
 end 
 
 local events = CreateFrame("Frame");
 events:RegisterEvent("ADDON_LOADED");
 events:RegisterEvent("LOOT_OPENED");
+events:RegisterEvent("LOOT_CLOSED");
 events:SetScript("OnEvent", core.init);

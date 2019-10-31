@@ -1,12 +1,13 @@
 ## Interface: 80205
 ## Title: |cff00ccffList Looter|r
 ## Author: SisCore
-## Version: r2.04
+## Version: r2.05
 ## DefaultState: enabled
 ## SavedVariables: ListLooterDB
-## X-Curse-Packaged-Version: r2.04
+## X-Curse-Packaged-Version: r2.05
 ## X-Curse-Project-ID: 286508
 ## X-Curse-Project-Name: ListLooter
 localization.lua
 config.lua
+frame.lua
 init.lua
