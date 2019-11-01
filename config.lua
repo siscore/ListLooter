@@ -405,6 +405,19 @@ function Config:CreateMenu()
 	return UIConfig;
 end
 
+function Config:AddItemByLink(itemLink)
+	if itemLink ~= nil then 
+		local _, _, Id = string.find(itemLink, "item:(%d+):")
+			
+		if Id then 
+			table.insert(ListLooterDB.LootDB,Id);
+			Config:GetListFromGlobal();
+			Config:CreateContent(UIConfig.list.listFrame.ScrollFrame.content);
+			print("ListLooter: "..itemLink.." added");
+		end
+	end 
+end
+
 --------------------------------------
 -- Events
 --------------------------------------

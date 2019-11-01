@@ -59,7 +59,9 @@ end
 -- WARNING: self automatically becomes events frame!
 function core:init(event, name)	
 	
-	if (name == "!ListLooter" and event == "ADDON_LOADED") then 
+	if (name == "!ListLooter" and event == "ADDON_LOADED") then
+		local config = core.Config:GetSettings();
+		
 		-- allows using left and right buttons to move through chat 'edit' box
 		for i = 1, NUM_CHAT_WINDOWS do
 			_G["ChatFrame"..i.."EditBox"]:SetAltArrowKeyMode(false);
@@ -82,6 +84,13 @@ function core:init(event, name)
 				
 		core.Config.Toggle();
 		
+		if (config.isLootFrame) then
+			core.Frame.Init();
+			LootFrame:UnregisterAllEvents();
+		end
+		
+		table.insert(UISpecialFrames, "!ListLooter");
+		
 		core:Print(L_WELCOMEBACK, UnitName("player").."!");
 	end
 	
@@ -92,35 +101,44 @@ function core:init(event, name)
 	if (event == "LOOT_CLOSED") then
 		local config = core.Config:GetSettings();
 		if (config.isLootFrame) then
-			core.Frame.LootClosed();
+			core.Frame.CloseLootFrame();
+		end
+	end
+	
+	if (event == "LOOT_SLOT_CLEARED") then
+		local config = core.Config:GetSettings();
+		if (config.isLootFrame) then
+			core.Frame.LootFrameItemCleared("index", name);
 		end
 	end
 end
 
 function core:Loot()
-	--print("event");
 	local config = core.Config:GetSettings();
 	local db = core.Config:GetLootDB();
 	if config.isEnable == true then
 		local numLootItems = GetNumLootItems();
 		for i = 1, numLootItems, 1 do
 			local itemLink = GetLootSlotLink(i)
-			local lootIcon, lootName, lootQuantity, currencyID, lootQuality, locked, isQuestItem, questID, isActive = GetLootSlotInfo(i);
+			local item = core.Frame.GetEmptyItem();
+			item.index = i;
+			item.lootIcon, item.lootName, item.lootQuantity, item.currencyID, item.lootQuality, item.locked, item.isQuestItem, item.questID, item.isActive = GetLootSlotInfo(i);
+			
 			local ifLooted = false;
 			
 			if (config.isCurrency == true and not ifLooted) then
 				local lootSlotType = GetLootSlotType(i);
-				if currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
+				if item.currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
 					LootSlot(i)
 					ifLooted = true;
-				elseif currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
+				elseif item.currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
 					LootSlot(i)
 					ifLooted = true;
 				end
 			end
 			
 			if (config.isQuestItem == true and not ifLooted) then 
-				if isQuestItem == true then 
+				if item.isQuestItem == true then 
 					LootSlot(i)
 					ifLooted = true;
 				end 
@@ -139,8 +157,8 @@ function core:Loot()
 				end
 			end
 			
-			if (config.isLootFrame and not ifLooted) then 
-				core.Frame.AddItemToLoot("LootId", i);
+			if (config.isLootFrame and not ifLooted) then
+				core.Frame.AddItem("table", item.index, item.lootIcon, item.lootName, item.lootQuantity, item.currencyID, item.lootQuality, item.locked, item.isQuestItem, item.questID, item.isActive);
 			end 
 		end
 		
@@ -148,8 +166,8 @@ function core:Loot()
 			CloseLoot()
 		end
 		
-		if (config.isLootFrame) then 
-			core.Frame.ShowLootFrame();
+		if (config.isLootFrame) then
+			core.Frame.ShowLootList();
 		end
 	end
 end 
@@ -158,4 +176,5 @@ local events = CreateFrame("Frame");
 events:RegisterEvent("ADDON_LOADED");
 events:RegisterEvent("LOOT_OPENED");
 events:RegisterEvent("LOOT_CLOSED");
+events:RegisterEvent("LOOT_SLOT_CLEARED");
 events:SetScript("OnEvent", core.init);
