@@ -8,6 +8,11 @@ L_OPTIONS_QUESTITEMS = "Loot quest items";
 L_OPTIONS_AFTERCLOSE = "Close after loot";
 L_OPTIONS_LISTPANELNAME = "Item list";
 L_OPTIONS_LISTADDTEXT = "Enter ItemID:";
+L_OPTIONS_FRAMESETTINGS = "Frame Settings (ALPHA)";
+L_OPTIONS_FRAMEICOSIZE = "Icon size";
+L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
+L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
+L_OPTIONS_FRAMEENABLE = "Replace default loot frame (requared /reload)";
 
 local clientLocale = GetLocale();
 
@@ -23,6 +28,11 @@ if clientLocale == "deDE" then
 	L_OPTIONS_AFTERCLOSE = "Close after loot";
 	L_OPTIONS_LISTPANELNAME = "Item list";
 	L_OPTIONS_LISTADDTEXT = "Enter ItemID:";
+	L_OPTIONS_FRAMESETTINGS = "Frame Settings (ALPHA)";
+	L_OPTIONS_FRAMEICOSIZE = "Icon size";
+	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
+	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
+	L_OPTIONS_FRAMEENABLE = "Replace default loot frame (requared /reload)";
     
 elseif clientLocale == "esES" or clientLocale == "esMX" then
 
@@ -36,6 +46,11 @@ elseif clientLocale == "esES" or clientLocale == "esMX" then
 	L_OPTIONS_AFTERCLOSE = "Close after loot";
 	L_OPTIONS_LISTPANELNAME = "Item list";
 	L_OPTIONS_LISTADDTEXT = "Enter ItemID:";
+	L_OPTIONS_FRAMESETTINGS = "Frame Settings (ALPHA)";
+	L_OPTIONS_FRAMEICOSIZE = "Icon size";
+	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
+	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
+	L_OPTIONS_FRAMEENABLE = "Replace default loot frame (requared /reload)";
 
 elseif clientLocale == "frFR" then
 
@@ -49,6 +64,11 @@ elseif clientLocale == "frFR" then
 	L_OPTIONS_AFTERCLOSE = "Close after loot";
 	L_OPTIONS_LISTPANELNAME = "Item list";
 	L_OPTIONS_LISTADDTEXT = "Enter ItemID:";
+	L_OPTIONS_FRAMESETTINGS = "Frame Settings (ALPHA)";
+	L_OPTIONS_FRAMEICOSIZE = "Icon size";
+	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
+	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
+	L_OPTIONS_FRAMEENABLE = "Replace default loot frame (requared /reload)";
     
 elseif clientLocale == "ruRU" then
 
@@ -62,4 +82,9 @@ elseif clientLocale == "ruRU" then
 	L_OPTIONS_AFTERCLOSE = "Закрыть окно добычи";
 	L_OPTIONS_LISTPANELNAME = "Список предметов";
 	L_OPTIONS_LISTADDTEXT = "Для добавления нового предмета введите ItemID:";
+	L_OPTIONS_FRAMESETTINGS = "Настройка фрейма сбора(ALPHA)";
+	L_OPTIONS_FRAMEICOSIZE = "Размер иконки";
+	L_OPTIONS_FRAMEFONTITEMSIZE = "Размер шрифта предмета";
+	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Размер щрифта количества";
+	L_OPTIONS_FRAMEENABLE = "Заменить стандартный фрейм сбора (требует /reload)";
 end

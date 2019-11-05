@@ -177,9 +177,9 @@ function Frame:AddItem(...)
 end
 
 function Frame:CreateItemFrame(id)
-	local iconSize = defaults.frame.iconSize;
-	local fontSizeItem = defaults.frame.fontSizeItem;
-	local fontSizeCount = defaults.frame.fontSizeCount;
+	local iconSize = ListLooterDB.frame.iconSize;
+	local fontSizeItem = ListLooterDB.frame.fontSizeItem;
+	local fontSizeCount = ListLooterDB.frame.fontSizeCount;
 	local fontItem = defaults.frame.fontItem;
 	local fontCount = defaults.frame.fontCount;
 	local posId = table.getn(UIFrame.Items)+1;
@@ -399,5 +399,27 @@ function Frame:LootFrameItemCleared(index)
 			Frame:AnchorItemsFrames();
 			return;
 		end 
+	end
+end
+
+function Frame:UpdateSettings()
+	for i=1, table.getn(UIFrame.Items) do
+		local frame = UIFrame.Items[i];
+		
+		local fontName, sizeName, outlineName = frame.name:GetFont();
+		frame.name:SetFont(fontName, ListLooterDB.frame.fontSizeItem, outlineName);
+		
+		local fontCount, sizeCount, outlineCount = frame.count:GetFont();
+		frame.count:SetFont(fontCount, ListLooterDB.frame.fontSizeCount, outlineCount);
+		
+		frame:SetHeight(ListLooterDB.frame.iconSize);
+		frame.iconFrame:SetSize(ListLooterDB.frame.iconSize, ListLooterDB.frame.iconSize);
+
+		frame.quest:SetSize(ListLooterDB.frame.iconSize * .8, ListLooterDB.frame.iconSize * .8);
+		frame.quest:ClearAllPoints();
+		frame.quest:SetPoint('BOTTOMLEFT', -ListLooterDB.frame.iconSize * .15, 0);
+		
+		Frame:UpdateWidth();
+		Frame:AnchorItemsFrames();
 	end
 end

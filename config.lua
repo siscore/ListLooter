@@ -24,6 +24,11 @@ local defaults = {
 		g = 0.8, -- 204/255
 		b = 1,
 		hex = "00ccff"
+	},
+	frame = {
+		iconSize = 22,
+        fontSizeItem = 12,
+        fontSizeCount = 12
 	}
 }
 
@@ -95,7 +100,7 @@ function Config:CreatePointer(relativeFrame, yOffset, text)
 	local parent = relativeFrame:GetParent();
 	local pointer = CreateFrame("Frame", nil, relativeFrame);
     pointer:SetPoint("TOPLEFT", relativeFrame, "TOPLEFT", 30, yOffset);
-	pointer:SetSize(parent:GetHeight(), 18);
+	pointer:SetSize(parent:GetWidth(), 18);
     pointer.label = pointer:CreateFontString(nil, "BACKGROUND", "GameFontNormal");
     pointer.label:SetPoint("TOP");
     pointer.label:SetPoint("BOTTOM");
@@ -122,7 +127,7 @@ function Config:CreateEditBox(relativeFrame, yOffset, focus)
 	local parent = relativeFrame:GetParent();
 	local editBox = CreateFrame("EditBox", nil, relativeFrame, "InputBoxTemplate");
 	editBox:SetPoint("TOPLEFT", relativeFrame, "TOPLEFT", 40, yOffset);
-	editBox:SetSize(parent:GetHeight()-10, 18);
+	editBox:SetSize(parent:GetWidth() - 90, 18);
 	editBox:SetAutoFocus(focus); 
 	
 	return editBox;
@@ -275,7 +280,11 @@ function Config:CreateMenu()
 			isMinimap = defaults.settings.isMinimap
 		};
 		ListLooterDB.LootDB = {};
-	end 
+	end
+
+	if (ListLooterDB.frame == nil) then 
+		ListLooterDB.frame = defaults.frame;
+	end
 
 	self:GetListFromGlobal();
 	----------------------------------
@@ -289,6 +298,7 @@ function Config:CreateMenu()
     UIConfig.title:SetText("|cff00ccffList Looter|r");
 	
 	UIConfig.poiner1 = self:CreatePointer(UIConfig, -50, L_OPTIONS_MAINSETTINGS);
+	UIConfig.poiner1:SetWidth(550);
 	
 	----------------------------------
 	-- Check Buttons
@@ -328,15 +338,54 @@ function Config:CreateMenu()
     UIConfig.cbAfterClose:SetScript("OnClick", function(self, button, down) 
 												ListLooterDB.settings.isAfterClose = self:GetChecked() and true or false;
 										   end);
-										   
-   -- Check Button 5:
+	
+	----------------------------------
+	-- FRAME SETTINGS
+	----------------------------------
+	UIConfig.poiner2 = self:CreatePointer(UIConfig, -250, L_OPTIONS_FRAMESETTINGS);
+	UIConfig.poiner2:SetWidth(550);
+	
+    -- Check Button 5:
 	UIConfig.cbLootFrame = CreateFrame("CheckButton", nil, UIConfig, "UICheckButtonTemplate");
-	UIConfig.cbLootFrame:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", 0, -5);
-	UIConfig.cbLootFrame.text:SetText("Loot frame (debug version)");
+	UIConfig.cbLootFrame:SetPoint("TOPLEFT", UIConfig.poiner2, "BOTTOMLEFT", 0, -5);
+	UIConfig.cbLootFrame.text:SetText(L_OPTIONS_FRAMEENABLE);
 	UIConfig.cbLootFrame:SetChecked(ListLooterDB.settings.isLootFrame);
     UIConfig.cbLootFrame:SetScript("OnClick", function(self, button, down) 
 												ListLooterDB.settings.isLootFrame = self:GetChecked() and true or false;
 										   end);
+	
+	-- Slider 1:
+	UIConfig.slider1 = self:CreateSlider(UIConfig, L_OPTIONS_FRAMEICOSIZE, 10, 50, ListLooterDB.frame.iconSize, "TOPLEFT", UIConfig.cbLootFrame, "BOTTOMLEFT", 0, -20);
+	UIConfig.slider1:SetScript('OnValueChanged', function(self, value)
+			value = math.floor(value + .5)
+
+			ListLooterDB.frame.iconSize = value
+			self.current:SetText(value)
+
+			core.Frame.UpdateSettings();
+		end)
+	
+	-- Slider 2:
+	UIConfig.slider2 = self:CreateSlider(UIConfig, L_OPTIONS_FRAMEFONTITEMSIZE, 8, 20, ListLooterDB.frame.fontSizeItem, "TOPLEFT", UIConfig.cbLootFrame, "BOTTOMLEFT", 300, -20);
+	UIConfig.slider2:SetScript('OnValueChanged', function(self, value)
+			value = math.floor(value + .5)
+
+			ListLooterDB.frame.fontSizeItem = value
+			self.current:SetText(value)
+
+			core.Frame.UpdateSettings();
+		end)
+	
+	-- Slider 3:
+	UIConfig.slider3 = self:CreateSlider(UIConfig, L_OPTIONS_FRAMEFONTCOUNTSIZE, 8, 20, ListLooterDB.frame.fontSizeCount, "TOPLEFT", UIConfig.slider1, "BOTTOMLEFT", 0, -40);
+	UIConfig.slider3:SetScript('OnValueChanged', function(self, value)
+			value = math.floor(value + .5)
+
+			ListLooterDB.frame.fontSizeCount = value
+			self.current:SetText(value)
+
+			core.Frame.UpdateSettings();
+		end)
 	
 	InterfaceOptions_AddCategory(UIConfig);
 	
@@ -403,6 +452,41 @@ function Config:CreateMenu()
 	InterfaceAddOnsList_Update();
 	
 	return UIConfig;
+end
+
+function Config:CreateSlider(parent, name, min, max, cur, ...)
+
+	local sliderBackdrop = {
+		bgFile = [[Interface\Buttons\UI-SliderBar-Background]], tile = true, tileSize = 8,
+		edgeFile = [[Interface\Buttons\UI-SliderBar-Border]], edgeSize = 8,
+		insets = {left = 3, right = 3, top = 6, bottom = 6},
+	}
+
+	local slider = CreateFrame('Slider', nil, parent)
+	slider:SetOrientation'HORIZONTAL'
+	slider:SetPoint(...)
+	slider:SetSize(250, 17)
+	slider:SetHitRectInsets(0, 0, -10, -10)
+	slider:SetBackdrop(sliderBackdrop)
+
+	slider:SetThumbTexture[[Interface\Buttons\UI-SliderBar-Button-Horizontal]]
+	slider:SetMinMaxValues(min, max)
+	slider:SetValue(cur)
+
+	slider.label = self:CreateFontString(parent, name, 'GameFontHighlightCenter', 'BOTTOM', slider, 'TOP')
+	slider.min = self:CreateFontString(parent, min, 'GameFontHighlightSmall', 'TOPLEFT', slider, 'BOTTOMLEFT', 2, 2)
+	slider.max = self:CreateFontString(parent, max, 'GameFontHighlightSmall', 'TOPRIGHT', slider, 'BOTTOMRIGHT', -2, 2)
+	slider.current = self:CreateFontString(parent, cur, 'GameFontHighlightSmall', 'TOP', slider, 'BOTTOM')
+
+	return slider
+end
+
+function Config:CreateFontString(parent, text, template,  ...)
+	local label = parent:CreateFontString(nil, nil, template or 'GameFontHighlight')
+	label:SetPoint(...)
+	label:SetText(text)
+
+	return label
 end
 
 function Config:AddItemByLink(itemLink)
