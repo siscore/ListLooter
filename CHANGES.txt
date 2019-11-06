@@ -1,10 +1,10 @@
-lightweight tag dbd04dcc48a4adf79f219cb0d72d2a5147bb5869 2.04-alpha
+lightweight tag 0b52ebe999c7eb699f553eb31f4c2e5d2d16f871 2.06-alpha
 Author:	SisCore <siscore@me.com>
-Date:	Thu Oct 17 20:15:47 2019 +0300
+Date:	Wed Nov 6 00:58:03 2019 +0300
 
-commit dbd04dcc48a4adf79f219cb0d72d2a5147bb5869
+commit 0b52ebe999c7eb699f553eb31f4c2e5d2d16f871
 Author: SisCore <siscore@me.com>
-Date:   Thu Oct 17 20:15:47 2019 +0300
+Date:   Wed Nov 6 00:58:03 2019 +0300
 
-    optimize
+    loot frame settings
 
