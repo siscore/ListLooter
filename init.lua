@@ -60,8 +60,6 @@ end
 function core:init(event, name)	
 	
 	if (name == "!ListLooter" and event == "ADDON_LOADED") then
-		local config = core.Config:GetSettings();
-		
 		-- allows using left and right buttons to move through chat 'edit' box
 		for i = 1, NUM_CHAT_WINDOWS do
 			_G["ChatFrame"..i.."EditBox"]:SetAltArrowKeyMode(false);
@@ -84,6 +82,7 @@ function core:init(event, name)
 				
 		core.Config.Toggle();
 		
+		local config = core.Config:GetSettings();
 		if (config.isLootFrame) then
 			core.Frame.Init();
 			LootFrame:UnregisterAllEvents();
