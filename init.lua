@@ -83,9 +83,9 @@ function core:init(event, name)
 		core.Config.Toggle();
 		
 		local config = core.Config:GetSettings();
+		core.Frame.Init();
 		if (config.isLootFrame) then
-			core.Frame.Init();
-			LootFrame:UnregisterAllEvents();
+			core.Frame.HideBlizzardLootFrame("isHide", true);
 		end
 		
 		table.insert(UISpecialFrames, "!ListLooter");

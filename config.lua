@@ -352,6 +352,7 @@ function Config:CreateMenu()
 	UIConfig.cbLootFrame:SetChecked(ListLooterDB.settings.isLootFrame);
     UIConfig.cbLootFrame:SetScript("OnClick", function(self, button, down) 
 												ListLooterDB.settings.isLootFrame = self:GetChecked() and true or false;
+												core.Frame.HideBlizzardLootFrame("isHide", ListLooterDB.settings.isLootFrame);
 										   end);
 	
 	-- Slider 1:

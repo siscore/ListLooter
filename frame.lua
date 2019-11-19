@@ -423,3 +423,15 @@ function Frame:UpdateSettings()
 		Frame:AnchorItemsFrames();
 	end
 end
+
+function Frame:HideBlizzardLootFrame(isHide)
+	if (isHide) then 
+		LootFrame:UnregisterEvent("LOOT_OPENED");
+		LootFrame:UnregisterEvent("LOOT_CLOSED");
+		LootFrame:UnregisterEvent("LOOT_SLOT_CLEARED");
+	else
+		LootFrame:RegisterEvent("LOOT_OPENED");
+		LootFrame:RegisterEvent("LOOT_CLOSED");
+		LootFrame:RegisterEvent("LOOT_SLOT_CLEARED");
+	end 
+end 
