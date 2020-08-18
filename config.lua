@@ -509,3 +509,18 @@ end
 local events = CreateFrame("Frame");
 events:RegisterEvent("GET_ITEM_INFO_RECEIVED");
 events:SetScript("OnEvent", Config.OnEvent);
+
+--------------------------------------
+-- Overrides
+--------------------------------------
+function OverrideCreateFrame(frame, description, parent)
+	local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
+	local wowtextversion
+	if wowtocversion and wowtocversion < 19999 then wowtextversion = "Classic" end 
+	if wowtocversion and wowtocversion > 19999 and wowtocversion < 90000 then wowtextversion = "Retail" end 
+	if wowtocversion and wowtocversion > 90000 then 
+		wowtextversion      = "Beta"
+		AddonBackdropTemplate = "BackdropTemplate"
+	end 
+	local f = CreateFrame(frame, description, parent, AddonBackdropTemplate)
+end
