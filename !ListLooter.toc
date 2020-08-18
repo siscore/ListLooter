@@ -13,3 +13,4 @@ localization.lua
 config.lua
 frame.lua
 init.lua
+override.lua

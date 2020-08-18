@@ -57,19 +57,20 @@ function Frame:LoadPosition()
 end
 	
 function Frame:Init()
-	UIFrame = CreateFrame("Button", "ListLooterLootFrame", UIParent)
+	UIFrame = core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrame", UIParent)
 	UIFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 2*defaults.delta, -2*defaults.delta);
 	UIFrame:SetSize(1,1);
 	UIFrame:SetShown(false);
 	
 	UIFrame:SetMovable(true)
 	UIFrame:RegisterForClicks"anyup"
-
-	UIFrame:SetBackdrop{
+	
+	core.Override.ApplyBackdropA(nil, UIFrame, {
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16,
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16,
 		insets = {left = 4, right = 4, top = 4, bottom = 4},
-	}
+	});
+
 	UIFrame:SetBackdropColor(0, 0, 0, 0.8)
 
 	UIFrame:SetClampedToScreen(true)
@@ -184,7 +185,7 @@ function Frame:CreateItemFrame(id)
 	local fontCount = defaults.frame.fontCount;
 	local posId = table.getn(UIFrame.Items)+1;
 	
-	local frame = CreateFrame("Button", "ListLooterLootFrameItem"..posId, UIFrame);
+	local frame = core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrameItem"..posId, UIFrame);
 	frame:SetHeight(math.max(fontSizeItem, iconSize));
 	frame:SetID(posId);
 
@@ -247,7 +248,7 @@ function Frame:CreateItemFrame(id)
 		end
 	end);
 
-	local iconFrame = CreateFrame("Frame", "ListLooterLootFrameItemIcon", frame);
+	local iconFrame = core.Override.CreateFrameA(nil, "Frame", "ListLooterLootFrameItemIcon", frame);
 	iconFrame:SetSize(iconSize, iconSize);
 	iconFrame:SetPoint("RIGHT", frame);
 	frame.iconFrame = iconFrame;

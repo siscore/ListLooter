@@ -87,7 +87,7 @@ function Config:GetThemeColor()
 end
 
 function Config:CreateButton(point, relativeFrame, relativePoint, yOffset, text)
-	local btn = CreateFrame("Button", nil, UIConfig, "GameMenuButtonTemplate");
+	local btn = core.Override.CreateFrameA(nil, "Button", nil, UIConfig, "GameMenuButtonTemplate");
 	btn:SetPoint(point, relativeFrame, relativePoint, 0, yOffset);
 	btn:SetSize(140, 40);
 	btn:SetText(text);
@@ -98,7 +98,7 @@ end
 
 function Config:CreatePointer(relativeFrame, yOffset, text)
 	local parent = relativeFrame:GetParent();
-	local pointer = CreateFrame("Frame", nil, relativeFrame);
+	local pointer = core.Override.CreateFrameA(nil, "Frame", nil, relativeFrame);
     pointer:SetPoint("TOPLEFT", relativeFrame, "TOPLEFT", 30, yOffset);
 	pointer:SetSize(parent:GetWidth(), 18);
     pointer.label = pointer:CreateFontString(nil, "BACKGROUND", "GameFontNormal");
@@ -125,7 +125,7 @@ end
 
 function Config:CreateEditBox(relativeFrame, yOffset, focus)
 	local parent = relativeFrame:GetParent();
-	local editBox = CreateFrame("EditBox", nil, relativeFrame, "InputBoxTemplate");
+	local editBox = core.Override.CreateFrameA(nil, "EditBox", nil, relativeFrame, "InputBoxTemplate");
 	editBox:SetPoint("TOPLEFT", relativeFrame, "TOPLEFT", 40, yOffset);
 	editBox:SetSize(parent:GetWidth() - 90, 18);
 	editBox:SetAutoFocus(focus); 
@@ -139,7 +139,7 @@ function Config:CreateTableRow(parent, rowHeight, N)
 	local fontHeight = select(2, GameFontNormalSmall:GetFont());
 	local rowHeight = fontHeight + 6;
 	
-	local row = CreateFrame("Button", nil, parent);
+	local row = core.Override.CreateFrameA(nil, "Button", nil, parent);
 	row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD");
 	row.id = N;
 	row:SetHeight(rowHeight);
@@ -158,7 +158,7 @@ function Config:CreateTableRow(parent, rowHeight, N)
 		end);	
 	row:SetText(itemsDB[N].name);
 	
-	row.delete = CreateFrame("Button", nil, row, "UIPanelCloseButton");
+	row.delete = core.Override.CreateFrameA(nil, "Button", nil, row, "UIPanelCloseButton");
 	row.delete:SetHeight(rowHeight*2);
 	row.delete:SetWidth(rowHeight*2);
 	row.delete:SetPoint("RIGHT", row, "RIGHT", -50, 0);
@@ -290,7 +290,7 @@ function Config:CreateMenu()
 	----------------------------------
 	-- MAIN SETTINGS
 	----------------------------------
-	UIConfig = CreateFrame("Frame", "ListLooterConfig", InterfaceOptionsFramePanelContainer);
+	UIConfig = core.Override.CreateFrameA(nil, 'Frame', 'ListLooterConfig', InterfaceOptionsFramePanelContainer);
 	UIConfig.name = "|cff00ccffList Looter|r";
 	
 	UIConfig.title = UIConfig:CreateFontString(nil, "BACKGROUND", "GameFontNormalLarge");
@@ -304,7 +304,7 @@ function Config:CreateMenu()
 	-- Check Buttons
 	----------------------------------
 	-- Check Button 1:
-	UIConfig.cbEnable = CreateFrame("CheckButton", nil, UIConfig, "UICheckButtonTemplate");
+	UIConfig.cbEnable = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
 	UIConfig.cbEnable:SetPoint("TOPLEFT", UIConfig, "TOPLEFT", 40, -70);
 	UIConfig.cbEnable.text:SetText(L_OPTIONS_ENABLE);
 	UIConfig.cbEnable:SetChecked(ListLooterDB.settings.IsEnable);
@@ -313,7 +313,7 @@ function Config:CreateMenu()
 										   end);
 
 	-- Check Button 2:
-	UIConfig.cbCurrency = CreateFrame("CheckButton", nil, UIConfig, "UICheckButtonTemplate");
+	UIConfig.cbCurrency = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
 	UIConfig.cbCurrency:SetPoint("TOPLEFT", UIConfig.cbEnable, "BOTTOMLEFT", 0, -5);
 	UIConfig.cbCurrency.text:SetText(L_OPTIONS_CURRENCY);
 	UIConfig.cbCurrency:SetChecked(ListLooterDB.settings.isCurrency);
@@ -322,7 +322,7 @@ function Config:CreateMenu()
 										   end);
 	
 	-- Check Button 3:
-	UIConfig.cbQuestItems = CreateFrame("CheckButton", nil, UIConfig, "UICheckButtonTemplate");
+	UIConfig.cbQuestItems = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
 	UIConfig.cbQuestItems:SetPoint("TOPLEFT", UIConfig.cbCurrency, "BOTTOMLEFT", 0, -5);
 	UIConfig.cbQuestItems.text:SetText(L_OPTIONS_QUESTITEMS);
 	UIConfig.cbQuestItems:SetChecked(ListLooterDB.settings.isQuestItem);
@@ -331,7 +331,7 @@ function Config:CreateMenu()
 										   end);
 	
 	-- Check Button 4:
-	UIConfig.cbAfterClose = CreateFrame("CheckButton", nil, UIConfig, "UICheckButtonTemplate");
+	UIConfig.cbAfterClose = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
 	UIConfig.cbAfterClose:SetPoint("TOPLEFT", UIConfig.cbQuestItems, "BOTTOMLEFT", 0, -5);
 	UIConfig.cbAfterClose.text:SetText(L_OPTIONS_AFTERCLOSE);
 	UIConfig.cbAfterClose:SetChecked(ListLooterDB.settings.isAfterClose);
@@ -346,7 +346,7 @@ function Config:CreateMenu()
 	UIConfig.poiner2:SetWidth(550);
 	
     -- Check Button 5:
-	UIConfig.cbLootFrame = CreateFrame("CheckButton", nil, UIConfig, "UICheckButtonTemplate");
+	UIConfig.cbLootFrame = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
 	UIConfig.cbLootFrame:SetPoint("TOPLEFT", UIConfig.poiner2, "BOTTOMLEFT", 0, -5);
 	UIConfig.cbLootFrame.text:SetText(L_OPTIONS_FRAMEENABLE);
 	UIConfig.cbLootFrame:SetChecked(ListLooterDB.settings.isLootFrame);
@@ -393,7 +393,7 @@ function Config:CreateMenu()
 	----------------------------------
 	-- LIST SETTINGS
 	----------------------------------
-	UIConfig.list = CreateFrame("Frame", "ListLooterConfigList", InterfaceOptionsFramePanelContainer);
+	UIConfig.list = core.Override.CreateFrameA(nil, "Frame", "ListLooterConfigList", InterfaceOptionsFramePanelContainer);
 	UIConfig.list.name = L_OPTIONS_LISTPANELNAME;
 	UIConfig.list.parent = UIConfig.name;
 	
@@ -417,7 +417,7 @@ function Config:CreateMenu()
 										Config:AddItem(newId);
 									end);
 	-- List of items:
-	UIConfig.list.listFrame = CreateFrame("FRAME", nil, UIConfig.list);
+	UIConfig.list.listFrame = core.Override.CreateFrameA(nil, "FRAME", nil, UIConfig.list);
 	UIConfig.list.listFrame:SetHeight(400);
 	UIConfig.list.listFrame:SetWidth(384);
 	UIConfig.list.listFrame:EnableMouse(false);
@@ -425,13 +425,13 @@ function Config:CreateMenu()
 	UIConfig.list.listFrame:SetPoint("TOPLEFT", 35, -100);
 	UIConfig.list.listFrame:SetPoint("BOTTOMRIGHT", -27, 30);
 	
-	UIConfig.list.listFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+	core.Override.ApplyBackdropA(nil, UIConfig.list.listFrame, {bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
                                             edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
                                             tile = true, tileSize = 16, edgeSize = 16});
 	UIConfig.list.listFrame:SetBackdropColor(0,0,0,0.2);
 	
 	--scrollframe 
-	UIConfig.list.listFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, UIConfig.list.listFrame, "UIPanelScrollFrameTemplate");
+	UIConfig.list.listFrame.ScrollFrame = core.Override.CreateFrameA(nil, "ScrollFrame", nil, UIConfig.list.listFrame, "UIPanelScrollFrameTemplate");
 	UIConfig.list.listFrame.ScrollFrame:SetPoint("TOPLEFT", UIConfig.list.listFrame, "TOPLEFT", 4, -8);
 	UIConfig.list.listFrame.ScrollFrame:SetPoint("BOTTOMRIGHT", UIConfig.list.listFrame, "BOTTOMRIGHT", -3, 4);
 	UIConfig.list.listFrame.ScrollFrame:SetClipsChildren(true);
@@ -442,7 +442,7 @@ function Config:CreateMenu()
     UIConfig.list.listFrame.ScrollFrame.ScrollBar:SetPoint("BOTTOMRIGHT", UIConfig.list.listFrame.ScrollFrame, "BOTTOMRIGHT", -7, 18);
 	
 	--content frame 
-	UIConfig.list.listFrame.ScrollFrame.content = CreateFrame("Frame", nil, UIConfig.list.listFrame.ScrollFrame) 
+	UIConfig.list.listFrame.ScrollFrame.content = core.Override.CreateFrameA(nil, "Frame", nil, UIConfig.list.listFrame.ScrollFrame) 
 	UIConfig.list.listFrame.ScrollFrame.content:SetSize(550, 128) 
 	UIConfig.list.listFrame.ScrollFrame:SetScrollChild(UIConfig.list.listFrame.ScrollFrame.content)
 	UIConfig.list.listFrame.ScrollFrame.content.rows = {};
@@ -463,12 +463,12 @@ function Config:CreateSlider(parent, name, min, max, cur, ...)
 		insets = {left = 3, right = 3, top = 6, bottom = 6},
 	}
 
-	local slider = CreateFrame('Slider', nil, parent)
+	local slider = core.Override.CreateFrameA(nil, 'Slider', nil, parent)
 	slider:SetOrientation'HORIZONTAL'
 	slider:SetPoint(...)
 	slider:SetSize(250, 17)
 	slider:SetHitRectInsets(0, 0, -10, -10)
-	slider:SetBackdrop(sliderBackdrop)
+	core.Override.ApplyBackdropA(nil, slider, sliderBackdrop);
 
 	slider:SetThumbTexture[[Interface\Buttons\UI-SliderBar-Button-Horizontal]]
 	slider:SetMinMaxValues(min, max)
@@ -509,18 +509,3 @@ end
 local events = CreateFrame("Frame");
 events:RegisterEvent("GET_ITEM_INFO_RECEIVED");
 events:SetScript("OnEvent", Config.OnEvent);
-
---------------------------------------
--- Overrides
---------------------------------------
-function OverrideCreateFrame(frame, description, parent)
-	local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
-	local wowtextversion
-	if wowtocversion and wowtocversion < 19999 then wowtextversion = "Classic" end 
-	if wowtocversion and wowtocversion > 19999 and wowtocversion < 90000 then wowtextversion = "Retail" end 
-	if wowtocversion and wowtocversion > 90000 then 
-		wowtextversion      = "Beta"
-		AddonBackdropTemplate = "BackdropTemplate"
-	end 
-	local f = CreateFrame(frame, description, parent, AddonBackdropTemplate)
-end
