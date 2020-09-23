@@ -35,6 +35,6 @@ function Override:ApplyBackdropA(frame, backdrop)
 		frame.backdropInfo = backdrop;
 		frame:ApplyBackdrop();
 	else 
-		frame:SetBackdrop(sliderBackdrop);
+		frame:SetBackdrop(backdrop);
 	end
 end
