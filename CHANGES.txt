@@ -1,10 +1,16 @@
-lightweight tag 0b52ebe999c7eb699f553eb31f4c2e5d2d16f871 2.06-alpha
-Author:	SisCore <siscore@me.com>
-Date:	Wed Nov 6 00:58:03 2019 +0300
+lightweight tag 07ad62520f97a3710db851711ba740bde2dc154c 2.3-release
+Author:	TerekhovAA <terekhovaa@quarta.su>
+Date:	Wed Oct 14 16:09:12 2020 +0300
 
-commit 0b52ebe999c7eb699f553eb31f4c2e5d2d16f871
-Author: SisCore <siscore@me.com>
-Date:   Wed Nov 6 00:58:03 2019 +0300
+commit c864974437c0f3c70fecefae149b82ad04c35ffb
+Author: TerekhovAA <terekhovaa@quarta.su>
+Date:   Wed Oct 14 16:08:44 2020 +0300
 
-    loot frame settings
+    TOC 9.01 + release
+
+commit c864974437c0f3c70fecefae149b82ad04c35ffb
+Author: TerekhovAA <terekhovaa@quarta.su>
+Date:   Wed Oct 14 16:08:44 2020 +0300
+
+    TOC 9.01 + release
 

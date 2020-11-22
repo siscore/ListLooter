@@ -8,7 +8,7 @@ L_OPTIONS_QUESTITEMS = "Loot quest items";
 L_OPTIONS_AFTERCLOSE = "Close after loot";
 L_OPTIONS_LISTPANELNAME = "Item list";
 L_OPTIONS_LISTADDTEXT = "Enter ItemID:";
-L_OPTIONS_FRAMESETTINGS = "Frame Settings (ALPHA)";
+L_OPTIONS_FRAMESETTINGS = "Frame Settings";
 L_OPTIONS_FRAMEICOSIZE = "Icon size";
 L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
 L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
@@ -28,7 +28,7 @@ if clientLocale == "deDE" then
 	L_OPTIONS_AFTERCLOSE = "Close after loot";
 	L_OPTIONS_LISTPANELNAME = "Item list";
 	L_OPTIONS_LISTADDTEXT = "Enter ItemID:";
-	L_OPTIONS_FRAMESETTINGS = "Frame Settings (ALPHA)";
+	L_OPTIONS_FRAMESETTINGS = "Frame Settings";
 	L_OPTIONS_FRAMEICOSIZE = "Icon size";
 	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
 	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
@@ -46,7 +46,7 @@ elseif clientLocale == "esES" or clientLocale == "esMX" then
 	L_OPTIONS_AFTERCLOSE = "Close after loot";
 	L_OPTIONS_LISTPANELNAME = "Item list";
 	L_OPTIONS_LISTADDTEXT = "Enter ItemID:";
-	L_OPTIONS_FRAMESETTINGS = "Frame Settings (ALPHA)";
+	L_OPTIONS_FRAMESETTINGS = "Frame Settings";
 	L_OPTIONS_FRAMEICOSIZE = "Icon size";
 	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
 	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
@@ -64,7 +64,7 @@ elseif clientLocale == "frFR" then
 	L_OPTIONS_AFTERCLOSE = "Close after loot";
 	L_OPTIONS_LISTPANELNAME = "Item list";
 	L_OPTIONS_LISTADDTEXT = "Enter ItemID:";
-	L_OPTIONS_FRAMESETTINGS = "Frame Settings (ALPHA)";
+	L_OPTIONS_FRAMESETTINGS = "Frame Settings";
 	L_OPTIONS_FRAMEICOSIZE = "Icon size";
 	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
 	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
@@ -82,7 +82,7 @@ elseif clientLocale == "ruRU" then
 	L_OPTIONS_AFTERCLOSE = "Закрыть окно добычи";
 	L_OPTIONS_LISTPANELNAME = "Список предметов";
 	L_OPTIONS_LISTADDTEXT = "Для добавления нового предмета введите ItemID:";
-	L_OPTIONS_FRAMESETTINGS = "Настройка фрейма сбора(ALPHA)";
+	L_OPTIONS_FRAMESETTINGS = "Настройка фрейма сбора";
 	L_OPTIONS_FRAMEICOSIZE = "Размер иконки";
 	L_OPTIONS_FRAMEFONTITEMSIZE = "Размер шрифта предмета";
 	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Размер щрифта количества";

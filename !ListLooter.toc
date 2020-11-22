@@ -1,12 +1,12 @@
-## Interface: 80300
+## Interface: 90002
 ## Title: |cff00ccffList Looter|r
 ## Notes: This is a simple addon which replace default loot frame. Including creating a list of items to automatically collect.
 ## Notes-ruRU: Замещает стандартное окно сбора добычи. Позволяет создавать списки для автоматического сбора.
 ## Author: SisCore
-## Version: a2.3
+## Version: a2.4
 ## DefaultState: enabled
 ## SavedVariables: ListLooterDB
-## X-Curse-Packaged-Version: a2.3
+## X-Curse-Packaged-Version: a2.4
 ## X-Curse-Project-ID: 286508
 ## X-Curse-Project-Name: ListLooter
 localization.lua

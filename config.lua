@@ -12,7 +12,7 @@ local UIConfig;
 --------------------------------------
 local defaults = {
 	settings = {
-		isEnable = true, 
+		isLootEnable = true, 
 		isCurrency = false,
 		isQuestItem = false,
 		isAfterClose = false,
@@ -267,13 +267,27 @@ function Config:GetListFromGlobal()
 	end
 end
 
+function Config:UpdateSettings1()
+	if (ListLooterDB.settings.isEnable ~= nil) then
+		local value1, value2, value3, value4, value5 = ListLooterDB.settings.isEnable, ListLooterDB.settings.isCurrency, ListLooterDB.settings.isQuestItem, ListLooterDB.settings.isAfterClose, ListLooterDB.settings.isMinimap
+
+		ListLooterDB.settings = {
+			isLootEnable = value1, 
+			isCurrency = value2,
+			isQuestItem = value3,
+			isAfterClose = value4,
+			isMinimap = value5
+		};
+	end
+end
+
 function Config:CreateMenu()
 	--ListLooterDB = nil;
 
 	if ListLooterDB == nil then
 		ListLooterDB = {};
 		ListLooterDB.settings = {
-			isEnable = defaults.settings.isEnable, 
+			isLootEnable = defaults.settings.isLootEnable, 
 			isCurrency = defaults.settings.isCurrency,
 			isQuestItem = defaults.settings.isQuestItem,
 			isAfterClose = defaults.settings.isAfterClose,
@@ -281,6 +295,8 @@ function Config:CreateMenu()
 		};
 		ListLooterDB.LootDB = {};
 	end
+
+	Config:UpdateSettings1();
 
 	if (ListLooterDB.frame == nil) then 
 		ListLooterDB.frame = defaults.frame;
@@ -307,9 +323,9 @@ function Config:CreateMenu()
 	UIConfig.cbEnable = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
 	UIConfig.cbEnable:SetPoint("TOPLEFT", UIConfig, "TOPLEFT", 40, -70);
 	UIConfig.cbEnable.text:SetText(L_OPTIONS_ENABLE);
-	UIConfig.cbEnable:SetChecked(ListLooterDB.settings.IsEnable);
-    UIConfig.cbEnable:SetScript("OnClick", function(self, button, down) 
-												ListLooterDB.settings.IsEnable = self:GetChecked() and true or false;
+	UIConfig.cbEnable:SetChecked(ListLooterDB.settings.isLootEnable);
+	UIConfig.cbEnable:SetScript("OnClick", function(self, button, down) 
+												ListLooterDB.settings.isLootEnable = self:GetChecked() and true or false;
 										   end);
 
 	-- Check Button 2:

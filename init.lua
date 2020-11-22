@@ -1,5 +1,4 @@
 local _, core = ...; -- Namespace
-
 --------------------------------------
 -- Custom Slash Command
 --------------------------------------
@@ -84,6 +83,7 @@ function core:init(event, name)
 		
 		local config = core.Config:GetSettings();
 		core.Frame.Init();
+
 		if (config.isLootFrame) then
 			core.Frame.HideBlizzardLootFrame("isHide", true);
 		end
@@ -115,8 +115,8 @@ end
 function core:Loot()
 	local config = core.Config:GetSettings();
 	local db = core.Config:GetLootDB();
-	if config.isEnable == true then
-		local numLootItems = GetNumLootItems();
+
+	local numLootItems = GetNumLootItems();
 		for i = 1, numLootItems, 1 do
 			local itemLink = GetLootSlotLink(i)
 			local item = core.Frame.GetEmptyItem();
@@ -125,50 +125,54 @@ function core:Loot()
 			
 			local ifLooted = false;
 			
-			if (config.isCurrency == true and not ifLooted) then
-				local lootSlotType = GetLootSlotType(i);
-				if item.currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
-					LootSlot(i)
-					ifLooted = true;
-				elseif item.currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
-					LootSlot(i)
-					ifLooted = true;
+			print(config.isLootEnable);
+			if config.isLootEnable == true then
+
+				if (config.isCurrency == true and not ifLooted) then
+					local lootSlotType = GetLootSlotType(i);
+					if item.currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
+						LootSlot(i)
+						ifLooted = true;
+					elseif item.currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
+						LootSlot(i)
+						ifLooted = true;
+					end
 				end
-			end
 			
-			if (config.isQuestItem == true and not ifLooted) then 
-				if item.isQuestItem == true then 
-					LootSlot(i)
-					ifLooted = true;
-				end 
-			end
+				if (config.isQuestItem == true and not ifLooted) then 
+					if item.isQuestItem == true then 
+						LootSlot(i)
+						ifLooted = true;
+					end 
+				end
 			
-			if (not ifLooted) then 
-				for c=1, table.getn(db), 1 do
-					if itemLink ~= nil then 
-						local _, _, Id = string.find(itemLink, "item:(%d+):")
-						if db[c] == Id then
-							LootSlot(i)
-							ifLooted = true;
-							break
+				if (not ifLooted) then 
+					for c=1, table.getn(db), 1 do
+						if itemLink ~= nil then 
+							local _, _, Id = string.find(itemLink, "item:(%d+):")
+							if db[c] == Id then
+								LootSlot(i)
+								ifLooted = true;
+								break
+							end
 						end
 					end
 				end
-			end
+			end 
 			
 			if (config.isLootFrame and not ifLooted) then
 				core.Frame.AddItem("table", item.index, item.lootIcon, item.lootName, item.lootQuantity, item.currencyID, item.lootQuality, item.locked, item.isQuestItem, item.questID, item.isActive);
 			end 
 		end
 		
-		if config.isAfterClose == true then
+		if (config.isAfterClose == true and config.isLootEnable == true) then
+			print("wtf_close_loot()")
 			CloseLoot()
 		end
 		
 		if (config.isLootFrame) then
 			core.Frame.ShowLootList();
 		end
-	end
 end 
 
 local events = CreateFrame("Frame");
