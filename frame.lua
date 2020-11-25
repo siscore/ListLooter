@@ -31,9 +31,14 @@ local defaults = {
 	delta = 5
 }
 --------------------------------------
+local LOOT_SLOT_NONE = 0;
+local LOOT_SLOT_ITEM = 1;
+local LOOT_SLOT_MONEY = 2;
+local LOOT_SLOT_CURRENCY = 3;
+
 local Frame = core.Frame;
 local UIFrame;
-local m = 0;
+local maxLootQuality = 0;
 
 local round = function(n)
 	return math.floor(n * 1e5 + .5) / 1e5;
@@ -105,7 +110,7 @@ end
 function Frame:AddItem(...)
 	local lootInfo = {...};
 	local item = Frame:GetEmptyItem();
-	
+
 	item.index = lootInfo[1];
 	item.lootIcon = lootInfo[2];
 	item.lootName = lootInfo[3];
@@ -136,7 +141,7 @@ function Frame:AddItem(...)
 
 		local slotType = GetLootSlotType(item.index)
 		if(slotType == LOOT_SLOT_MONEY) then
-			item = item:gsub("\n", ", ")
+			item.lootName = item.lootName:gsub("\n", ", ")
 		end
 
 		if(item.lootQuantity > 1) then
@@ -170,7 +175,7 @@ function Frame:AddItem(...)
 		itemFrame.name:SetTextColor(r, g, b)
 		itemFrame.icon:SetTexture(item.lootIcon)
 
-		m = math.max(m, item.lootQuality)
+		maxLootQuality = math.max(maxLootQuality, item.lootQuality)
 
 		itemFrame:Enable()
 		itemFrame:Show()
@@ -231,10 +236,10 @@ function Frame:CreateItemFrame(id)
 		else
 			StaticPopup_Hide"CONFIRM_LOOT_DISTRIBUTION";
 
-			LootFrame.selectedLootButton = self;
-			LootFrame.selectedSlot = self.index;
-			LootFrame.selectedQuality = self.quality;
-			LootFrame.selectedItemName = self.name:GetText();
+			--LootFrame.selectedLootButton = self;
+			--LootFrame.selectedSlot = self.index;
+			--LootFrame.selectedQuality = self.quality;
+			--LootFrame.selectedItemName = self.name:GetText();
 
 			LootSlot(self.index); 
 		end
@@ -301,7 +306,7 @@ function Frame:ShowLootList()
 	if (Frame:GetVisibleListItems() == 0) then return end;
 	Frame:AnchorItemsFrames();
 	
-	local color = ITEM_QUALITY_COLORS[m];
+	local color = ITEM_QUALITY_COLORS[maxLootQuality];
 	UIFrame:SetBackdropBorderColor(color.r, color.g, color.b, .8);
 	
 	Frame:UpdateWidth();
@@ -371,7 +376,7 @@ function Frame:UpdateWidth()
 		local frame = UIFrame.Items[i];
 		if(frame:IsShown()) then
 			local width = frame.name:GetStringWidth()
-			if(width > maxWidth) then
+			if(width > maxWidth) then 
 				maxWidth = width;
 			end
 		end
@@ -388,7 +393,7 @@ function Frame:CloseLootFrame()
 		UIFrame.Items[i]:Hide();
 	end
 	
-	m = 0;
+	maxLootQuality = 0;
 end
 
 function Frame:LootFrameItemCleared(index)

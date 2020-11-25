@@ -1,5 +1,4 @@
 local _, core = ...; -- Namespace
-
 --------------------------------------
 -- Custom Slash Command
 --------------------------------------
@@ -84,6 +83,7 @@ function core:init(event, name)
 		
 		local config = core.Config:GetSettings();
 		core.Frame.Init();
+
 		if (config.isLootFrame) then
 			core.Frame.HideBlizzardLootFrame("isHide", true);
 		end
@@ -115,8 +115,8 @@ end
 function core:Loot()
 	local config = core.Config:GetSettings();
 	local db = core.Config:GetLootDB();
-	if config.isEnable == true then
-		local numLootItems = GetNumLootItems();
+
+	local numLootItems = GetNumLootItems();
 		for i = 1, numLootItems, 1 do
 			local itemLink = GetLootSlotLink(i)
 			local item = core.Frame.GetEmptyItem();
@@ -135,15 +135,15 @@ function core:Loot()
 					ifLooted = true;
 				end
 			end
-			
+		
 			if (config.isQuestItem == true and not ifLooted) then 
 				if item.isQuestItem == true then 
 					LootSlot(i)
 					ifLooted = true;
 				end 
 			end
-			
-			if (not ifLooted) then 
+		
+			if (config.isLootEnable == true and not ifLooted) then 
 				for c=1, table.getn(db), 1 do
 					if itemLink ~= nil then 
 						local _, _, Id = string.find(itemLink, "item:(%d+):")
@@ -155,20 +155,19 @@ function core:Loot()
 					end
 				end
 			end
-			
+
 			if (config.isLootFrame and not ifLooted) then
 				core.Frame.AddItem("table", item.index, item.lootIcon, item.lootName, item.lootQuantity, item.currencyID, item.lootQuality, item.locked, item.isQuestItem, item.questID, item.isActive);
 			end 
 		end
 		
-		if config.isAfterClose == true then
+		if (config.isAfterClose == true and config.isLootEnable == true) then
 			CloseLoot()
 		end
 		
 		if (config.isLootFrame) then
 			core.Frame.ShowLootList();
 		end
-	end
 end 
 
 local events = CreateFrame("Frame");

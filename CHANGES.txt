@@ -1,10 +1,16 @@
-lightweight tag 0b52ebe999c7eb699f553eb31f4c2e5d2d16f871 2.06-alpha
+lightweight tag df7b3a285c3fc69e387befa5124aa5264a4e9bdb 2.4-alpha
 Author:	SisCore <siscore@me.com>
-Date:	Wed Nov 6 00:58:03 2019 +0300
+Date:	Sun Nov 22 21:46:54 2020 +0300
 
-commit 0b52ebe999c7eb699f553eb31f4c2e5d2d16f871
+commit 39519b1841842e8d4c5816a769418beb2d3bd0e4
 Author: SisCore <siscore@me.com>
-Date:   Wed Nov 6 00:58:03 2019 +0300
+Date:   Sun Nov 22 21:38:14 2020 +0300
 
-    loot frame settings
+    fix some error on loot currency without autoloot option on
+
+commit 39519b1841842e8d4c5816a769418beb2d3bd0e4
+Author: SisCore <siscore@me.com>
+Date:   Sun Nov 22 21:38:14 2020 +0300
+
+    fix some error on loot currency without autoloot option on
 
