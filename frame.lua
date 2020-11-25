@@ -234,6 +234,8 @@ function Frame:CreateItemFrame(id)
 				core.Config.AddItemByLink("link",GetLootSlotLink(self.index));
 			end 
 		else
+			--print("LOOT_THIS_SHIT")
+			--print(self.index)
 			StaticPopup_Hide"CONFIRM_LOOT_DISTRIBUTION";
 
 			--LootFrame.selectedLootButton = self;
