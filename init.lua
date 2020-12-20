@@ -1,4 +1,9 @@
 local _, core = ...; -- Namespace
+
+local LOOT_SLOT_NONE = 0;
+local LOOT_SLOT_ITEM = 1;
+local LOOT_SLOT_MONEY = 2;
+local LOOT_SLOT_CURRENCY = 3;
 --------------------------------------
 -- Custom Slash Command
 --------------------------------------
@@ -125,25 +130,47 @@ function core:Loot()
 			
 			local ifLooted = false;
 			
-			print(config.isLootEnable);
+			--print(config.isLootEnable);
 			if config.isLootEnable == true then
 
 				if (config.isCurrency == true and not ifLooted) then
 					local lootSlotType = GetLootSlotType(i);
 					if item.currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
-						LootSlot(i)
-						ifLooted = true;
+						local info = C_CurrencyInfo.GetCurrencyInfo(item.currencyID);
+
+						print('Currency Quantity: '..info.quantity);
+						print('Currency Limit: '..info.maxQuantity);
+
+						if (info.maxQuantity == nil or info.maxQuantity == 0 or info.maxQuantity >= (info.quantity + item.lootQuantity)) then 
+							LootSlot(i);
+							ifLooted = true;
+						end 
 					elseif item.currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
-						LootSlot(i)
-						ifLooted = true;
+						local info = C_CurrencyInfo.GetCurrencyInfo(item.currencyID);
+
+						print('Currency Quantity: '..info.quantity);
+						print('Currency Limit: '..info.maxQuantity);
+
+						if (info.maxQuantity == nil or info.maxQuantity == 0 or info.maxQuantity >= (info.quantity + item.lootQuantity)) then 
+							LootSlot(i);
+							ifLooted = true;
+						end 
 					end
 				end
 			
 				if (config.isQuestItem == true and not ifLooted) then 
 					if item.isQuestItem == true then 
-						LootSlot(i)
+						LootSlot(i);
 						ifLooted = true;
 					end 
+				end
+
+				if (config.isFishingLoot == true and not ifLooted) then 
+					local isFishingLoot = IsFishingLoot();
+					if (isFishingLoot) then 
+						LootSlot(i);
+						ifLooted = true;
+					end
 				end
 			
 				if (not ifLooted) then 
@@ -151,7 +178,7 @@ function core:Loot()
 						if itemLink ~= nil then 
 							local _, _, Id = string.find(itemLink, "item:(%d+):")
 							if db[c] == Id then
-								LootSlot(i)
+								LootSlot(i);
 								ifLooted = true;
 								break
 							end
@@ -166,7 +193,7 @@ function core:Loot()
 		end
 		
 		if (config.isAfterClose == true and config.isLootEnable == true) then
-			print("wtf_close_loot()")
+			--print("wtf_close_loot()")
 			CloseLoot()
 		end
 		

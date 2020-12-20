@@ -17,7 +17,8 @@ local defaults = {
 		isQuestItem = false,
 		isAfterClose = false,
 		isMinimap = false,
-		isLootFrame = false
+		isLootFrame = false,
+		isFishingLoot = false
 	},
 	theme = {
 		r = 0, 
@@ -269,14 +270,31 @@ end
 
 function Config:UpdateSettings1()
 	if (ListLooterDB.settings.isEnable ~= nil) then
-		local value1, value2, value3, value4, value5 = ListLooterDB.settings.isEnable, ListLooterDB.settings.isCurrency, ListLooterDB.settings.isQuestItem, ListLooterDB.settings.isAfterClose, ListLooterDB.settings.isMinimap
+		local value1, value2, value3, value4, value5, value6 = ListLooterDB.settings.isEnable, ListLooterDB.settings.isCurrency, ListLooterDB.settings.isQuestItem, ListLooterDB.settings.isAfterClose, ListLooterDB.settings.isMinimap, ListLooterDB.settings.isLootFrame
 
 		ListLooterDB.settings = {
 			isLootEnable = value1, 
 			isCurrency = value2,
 			isQuestItem = value3,
 			isAfterClose = value4,
-			isMinimap = value5
+			isMinimap = value5,
+			isLootFrame = value6
+		};
+	end
+end
+
+function Config:UpdateSettings2()
+	if (ListLooterDB.settings.isFishingLoot == nil) then
+		local value1, value2, value3, value4, value5, value6 = ListLooterDB.settings.isLootEnable, ListLooterDB.settings.isCurrency, ListLooterDB.settings.isQuestItem, ListLooterDB.settings.isAfterClose, ListLooterDB.settings.isMinimap, ListLooterDB.settings.isLootFrame
+
+		ListLooterDB.settings = {
+			isLootEnable = value1, 
+			isCurrency = value2,
+			isQuestItem = value3,
+			isAfterClose = value4,
+			isMinimap = value5,
+			isLootFrame = value6,
+			isFishingLoot = defaults.settings.isFishingLoot	
 		};
 	end
 end
@@ -291,13 +309,16 @@ function Config:CreateMenu()
 			isCurrency = defaults.settings.isCurrency,
 			isQuestItem = defaults.settings.isQuestItem,
 			isAfterClose = defaults.settings.isAfterClose,
-			isMinimap = defaults.settings.isMinimap
+			isMinimap = defaults.settings.isMinimap,
+			isLootFrame = defaults.settings.isLootFrame,
+			isFishingLoot = defaults.settings.isFishingLoot	
 		};
 		ListLooterDB.LootDB = {};
 	end
 
 	Config:UpdateSettings1();
-
+	Config:UpdateSettings2();
+	
 	if (ListLooterDB.frame == nil) then 
 		ListLooterDB.frame = defaults.frame;
 	end
@@ -353,6 +374,15 @@ function Config:CreateMenu()
 	UIConfig.cbAfterClose:SetChecked(ListLooterDB.settings.isAfterClose);
     UIConfig.cbAfterClose:SetScript("OnClick", function(self, button, down) 
 												ListLooterDB.settings.isAfterClose = self:GetChecked() and true or false;
+										   end);
+
+	-- Check Button 5:
+	UIConfig.cbFishingLoot = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
+	UIConfig.cbFishingLoot:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", 0, -5);
+	UIConfig.cbFishingLoot.text:SetText(L_OPTIONS_FISHLOOT);
+	UIConfig.cbFishingLoot:SetChecked(ListLooterDB.settings.isFishingLoot);
+    UIConfig.cbFishingLoot:SetScript("OnClick", function(self, button, down) 
+												ListLooterDB.settings.isFishingLoot = self:GetChecked() and true or false;
 										   end);
 	
 	----------------------------------
