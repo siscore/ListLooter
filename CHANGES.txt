@@ -1,16 +1,16 @@
-lightweight tag 07ad62520f97a3710db851711ba740bde2dc154c 2.3-release
-Author:	TerekhovAA <terekhovaa@quarta.su>
-Date:	Wed Oct 14 16:09:12 2020 +0300
+lightweight tag df7b3a285c3fc69e387befa5124aa5264a4e9bdb 2.4-alpha
+Author:	SisCore <siscore@me.com>
+Date:	Sun Nov 22 21:46:54 2020 +0300
 
-commit c864974437c0f3c70fecefae149b82ad04c35ffb
-Author: TerekhovAA <terekhovaa@quarta.su>
-Date:   Wed Oct 14 16:08:44 2020 +0300
+commit 39519b1841842e8d4c5816a769418beb2d3bd0e4
+Author: SisCore <siscore@me.com>
+Date:   Sun Nov 22 21:38:14 2020 +0300
 
-    TOC 9.01 + release
+    fix some error on loot currency without autoloot option on
 
-commit c864974437c0f3c70fecefae149b82ad04c35ffb
-Author: TerekhovAA <terekhovaa@quarta.su>
-Date:   Wed Oct 14 16:08:44 2020 +0300
+commit 39519b1841842e8d4c5816a769418beb2d3bd0e4
+Author: SisCore <siscore@me.com>
+Date:   Sun Nov 22 21:38:14 2020 +0300
 
-    TOC 9.01 + release
+    fix some error on loot currency without autoloot option on
 
