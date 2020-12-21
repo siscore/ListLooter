@@ -367,23 +367,23 @@ function Config:CreateMenu()
 												ListLooterDB.settings.isQuestItem = self:GetChecked() and true or false;
 										   end);
 	
+	-- Check Button 5:
+	UIConfig.cbFishingLoot = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
+	UIConfig.cbFishingLoot:SetPoint("TOPLEFT", UIConfig.cbQuestItems, "BOTTOMLEFT", 0, -5);
+	UIConfig.cbFishingLoot.text:SetText(L_OPTIONS_FISHLOOT);
+	UIConfig.cbFishingLoot:SetChecked(ListLooterDB.settings.isFishingLoot);
+	UIConfig.cbFishingLoot:SetScript("OnClick", function(self, button, down) 
+												ListLooterDB.settings.isFishingLoot = self:GetChecked() and true or false;
+											end);
 	-- Check Button 4:
 	UIConfig.cbAfterClose = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
-	UIConfig.cbAfterClose:SetPoint("TOPLEFT", UIConfig.cbQuestItems, "BOTTOMLEFT", 0, -5);
+	UIConfig.cbAfterClose:SetPoint("TOPLEFT", UIConfig.cbFishingLoot, "BOTTOMLEFT", 0, -5);
 	UIConfig.cbAfterClose.text:SetText(L_OPTIONS_AFTERCLOSE);
 	UIConfig.cbAfterClose:SetChecked(ListLooterDB.settings.isAfterClose);
     UIConfig.cbAfterClose:SetScript("OnClick", function(self, button, down) 
 												ListLooterDB.settings.isAfterClose = self:GetChecked() and true or false;
 										   end);
 
-	-- Check Button 5:
-	UIConfig.cbFishingLoot = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate");
-	UIConfig.cbFishingLoot:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", 0, -5);
-	UIConfig.cbFishingLoot.text:SetText(L_OPTIONS_FISHLOOT);
-	UIConfig.cbFishingLoot:SetChecked(ListLooterDB.settings.isFishingLoot);
-    UIConfig.cbFishingLoot:SetScript("OnClick", function(self, button, down) 
-												ListLooterDB.settings.isFishingLoot = self:GetChecked() and true or false;
-										   end);
 	
 	----------------------------------
 	-- FRAME SETTINGS
