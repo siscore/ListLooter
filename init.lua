@@ -138,8 +138,8 @@ function core:Loot()
 					if item.currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
 						local info = C_CurrencyInfo.GetCurrencyInfo(item.currencyID);
 
-						print('Currency Quantity: '..info.quantity);
-						print('Currency Limit: '..info.maxQuantity);
+						--print('Currency Quantity: '..info.quantity);
+						--print('Currency Limit: '..info.maxQuantity);
 
 						if (info.maxQuantity == nil or info.maxQuantity == 0 or info.maxQuantity >= (info.quantity + item.lootQuantity)) then 
 							LootSlot(i);
