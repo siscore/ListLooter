@@ -144,7 +144,7 @@ function Config:CreateTableRow(parent, rowHeight, N)
 	row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD");
 	row.id = N;
 	row:SetHeight(rowHeight);
-	row:SetPoint("RIGHT", parent, "RIGHT", -25, 0);
+	row:SetPoint("RIGHT", parent, "RIGHT", 0, 0);
 	row:SetNormalFontObject("GameFontNormal")
 	row:SetScript("OnEnter", function()
 			-- ** HgD CODE CHANGES START HERE ** --
@@ -157,12 +157,16 @@ function Config:CreateTableRow(parent, rowHeight, N)
 			row.delete:Hide();
 			-- ** HgD CODE CHANGES END HERE ** --
 		end);	
-	row:SetText(itemsDB[N].name);
-	
+
+	row.font = row:CreateFontString(nil, "BACKGROUND", "GameFontNormal");
+	row.font:SetAllPoints()
+	row.font:SetText(itemsDB[N].name);
+	row.font:SetJustifyH("LEFT");
+
 	row.delete = core.Override.CreateFrameA(nil, "Button", nil, row, "UIPanelCloseButton");
 	row.delete:SetHeight(rowHeight*2);
 	row.delete:SetWidth(rowHeight*2);
-	row.delete:SetPoint("RIGHT", row, "RIGHT", -50, 0);
+	row.delete:SetPoint("RIGHT", row, "RIGHT", -10, 0);
 	row.delete:Hide();
 	row.delete:RegisterForClicks("LeftButtonUp");
 	row.delete:SetScript("OnClick", function()
@@ -214,7 +218,7 @@ function Config:CreateContent(content)
 		else
 			--update old
 			local r = content.rows[i];
-			r:SetText(itemsDB[i].name);
+			r.font:SetText(itemsDB[i].name);
 			r:Show();
 		end 
 	end
