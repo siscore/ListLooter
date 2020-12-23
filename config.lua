@@ -542,7 +542,7 @@ function Config:CreateDropdown(opts)
         dd_title:SetText(item)
         local text_width = dd_title:GetStringWidth() + 20
         if text_width > dropdown_width then
-            dropdown_width = text_width
+            dropdown_width = text_width + 100
         end
     end
 
