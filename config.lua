@@ -6,7 +6,6 @@ core.Config = {}; -- adds Config table to addon namespace
 
 local Config = core.Config;
 local UIConfig;
-
 --------------------------------------
 -- Defaults (usually a database!)
 --------------------------------------
@@ -18,7 +17,8 @@ local defaults = {
 		isAfterClose = false,
 		isMinimap = false,
 		isLootFrame = false,
-		isFishingLoot = false
+		isFishingLoot = false,
+		customFontName = "Default",
 	},
 	theme = {
 		r = 0, 
@@ -102,7 +102,7 @@ function Config:CreatePointer(relativeFrame, yOffset, text)
 	local pointer = core.Override.CreateFrameA(nil, "Frame", nil, relativeFrame);
     pointer:SetPoint("TOPLEFT", relativeFrame, "TOPLEFT", 30, yOffset);
 	pointer:SetSize(parent:GetWidth(), 18);
-    pointer.label = pointer:CreateFontString(nil, "BACKGROUND", "GameFontNormal");
+	pointer.label = pointer:CreateFontString(nil, "BACKGROUND", "GameFontNormal");
     pointer.label:SetPoint("TOP");
     pointer.label:SetPoint("BOTTOM");
     pointer.label:SetJustifyH("CENTER");
@@ -303,6 +303,12 @@ function Config:UpdateSettings2()
 	end
 end
 
+function Config:UpdateSettings3()
+	if (ListLooterDB.settings.customFontName == nil) then
+		ListLooterDB.settings.customFontName = defaults.settings.customFontName;
+	end
+end
+
 function Config:CreateMenu()
 	--ListLooterDB = nil;
 
@@ -322,6 +328,7 @@ function Config:CreateMenu()
 
 	Config:UpdateSettings1();
 	Config:UpdateSettings2();
+	Config:UpdateSettings3();
 	
 	if (ListLooterDB.frame == nil) then 
 		ListLooterDB.frame = defaults.frame;
@@ -388,11 +395,25 @@ function Config:CreateMenu()
 												ListLooterDB.settings.isAfterClose = self:GetChecked() and true or false;
 										   end);
 
-	
+	-- Drop Down Button 1:									   
+	local fontsList = core.FontProvider:GetFontsName();
+	local font_opts = {
+		["name"]  ="custom_font_name",
+		["parent"] = UIConfig,
+		["title"] = L_OPTIONS_CUSTOMFONTNAME,
+		["items"] = fontsList,
+		["defaultVal"] = ListLooterDB.settings.customFontName or "Default", 
+		["changeFunc"] = function(dropdown_frame, dropdown_val)
+			ListLooterDB.settings.customFontName = dropdown_val;
+			core.Frame:UpdateSettings();
+		end
+	}
+	UIConfig.ddCustomFont = self:CreateDropdown(font_opts);
+	UIConfig.ddCustomFont:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", -12, -15);
 	----------------------------------
 	-- FRAME SETTINGS
 	----------------------------------
-	UIConfig.poiner2 = self:CreatePointer(UIConfig, -250, L_OPTIONS_FRAMESETTINGS);
+	UIConfig.poiner2 = self:CreatePointer(UIConfig, -320, L_OPTIONS_FRAMESETTINGS);
 	UIConfig.poiner2:SetWidth(550);
 	
     -- Check Button 5:
@@ -503,6 +524,50 @@ function Config:CreateMenu()
 	InterfaceAddOnsList_Update();
 	
 	return UIConfig;
+end
+
+function Config:CreateDropdown(opts)
+    local dropdown_name = '$parent_' .. opts['name'] .. '_dropdown'
+    local menu_items = opts['items'] or {}
+    local title_text = opts['title'] or ''
+    local dropdown_width = 0
+    local default_val = opts['defaultVal'] or ''
+    local change_func = opts['changeFunc'] or function (dropdown_val) end
+
+    local dropdown = CreateFrame("Frame", dropdown_name, opts['parent'], 'UIDropDownMenuTemplate')
+    local dd_title = dropdown:CreateFontString(dropdown, 'OVERLAY', 'GameFontNormalSmall')
+    dd_title:SetPoint("TOPLEFT", 20, 10)
+
+	for _, item in pairs(menu_items) do
+        dd_title:SetText(item)
+        local text_width = dd_title:GetStringWidth() + 20
+        if text_width > dropdown_width then
+            dropdown_width = text_width
+        end
+    end
+
+    UIDropDownMenu_SetWidth(dropdown, dropdown_width)
+    UIDropDownMenu_SetText(dropdown, default_val)
+    dd_title:SetText(title_text)
+
+    UIDropDownMenu_Initialize(dropdown, function(self, level, _)
+        local info = UIDropDownMenu_CreateInfo()
+        for key, val in pairs(menu_items) do
+            info.text = val;
+            info.checked = (ListLooterDB.settings.customFontName == val)
+            info.menuList= key
+            info.hasArrow = false
+            info.func = function(b)
+                UIDropDownMenu_SetSelectedValue(dropdown, b.value, b.value)
+                UIDropDownMenu_SetText(dropdown, b.value)
+                b.checked = true
+                change_func(dropdown, b.value)
+            end
+            UIDropDownMenu_AddButton(info)
+        end
+    end)
+
+    return dropdown
 end
 
 function Config:CreateSlider(parent, name, min, max, cur, ...)

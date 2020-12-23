@@ -14,6 +14,8 @@ L_OPTIONS_FRAMEICOSIZE = "Icon size";
 L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
 L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
 L_OPTIONS_FRAMEENABLE = "Replace default loot frame";
+L_OPTIONS_USECUSTOMFONT = "Use custom font";
+L_OPTIONS_CUSTOMFONTNAME = "Custom font";
 
 local clientLocale = GetLocale();
 
@@ -35,6 +37,8 @@ if clientLocale == "deDE" then
 	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
 	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
 	L_OPTIONS_FRAMEENABLE = "Replace default loot frame";
+	L_OPTIONS_USECUSTOMFONT = "Use custom font";
+	L_OPTIONS_CUSTOMFONTNAME = "Custom font";
     
 elseif clientLocale == "esES" or clientLocale == "esMX" then
 
@@ -54,6 +58,8 @@ elseif clientLocale == "esES" or clientLocale == "esMX" then
 	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
 	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
 	L_OPTIONS_FRAMEENABLE = "Replace default loot frame";
+	L_OPTIONS_USECUSTOMFONT = "Use custom font";
+	L_OPTIONS_CUSTOMFONTNAME = "Custom font";
 
 elseif clientLocale == "frFR" then
 
@@ -73,6 +79,8 @@ elseif clientLocale == "frFR" then
 	L_OPTIONS_FRAMEFONTITEMSIZE = "Item font size";
 	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size";
 	L_OPTIONS_FRAMEENABLE = "Replace default loot frame";
+	L_OPTIONS_USECUSTOMFONT = "Use custom font";
+	L_OPTIONS_CUSTOMFONTNAME = "Custom font";
     
 elseif clientLocale == "ruRU" then
 
@@ -92,4 +100,6 @@ elseif clientLocale == "ruRU" then
 	L_OPTIONS_FRAMEFONTITEMSIZE = "Размер шрифта предмета";
 	L_OPTIONS_FRAMEFONTCOUNTSIZE = "Размер щрифта количества";
 	L_OPTIONS_FRAMEENABLE = "Заменить стандартный фрейм сбора";
+	L_OPTIONS_USECUSTOMFONT = "Использовать сторонний шрифт";
+	L_OPTIONS_CUSTOMFONTNAME = "Шрифт";
 end

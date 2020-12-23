@@ -10,9 +10,7 @@ core.Frame = {}; -- adds Frame table to addon namespace
 local defaults = {
 	frame = {
 		iconSize = 22,
-		fontItem = GameFontWhite:GetFont(),
         fontSizeItem = 12,
-        fontCount = NumberFontNormalSmall:GetFont(),
         fontSizeCount = 12
 	},
 	framePosition = "",
@@ -111,6 +109,11 @@ function Frame:AddItem(...)
 	local lootInfo = {...};
 	local item = Frame:GetEmptyItem();
 
+	local fontItem = core.FontProvider:getFontName();
+	local fontCount = core.FontProvider:getFontName();
+	local fontSizeItem = ListLooterDB.frame.fontSizeItem;
+	local fontSizeCount = ListLooterDB.frame.fontSizeCount;
+
 	item.index = lootInfo[1];
 	item.lootIcon = lootInfo[2];
 	item.lootName = lootInfo[3];
@@ -146,6 +149,7 @@ function Frame:AddItem(...)
 
 		if(item.lootQuantity > 1) then
 			itemFrame.count:SetText(item.lootQuantity)
+			--itemFrame.count:SetFont(fontCount, fontSizeCount, 'OUTLINE')
 			itemFrame.count:Show()
 		else
 			itemFrame.count:Hide()
@@ -172,6 +176,7 @@ function Frame:AddItem(...)
 		itemFrame.quality = item.lootQuality
 
 		itemFrame.name:SetText(item.lootName)
+		--itemFrame.name:SetFont(fontItem, fontSizeItem)
 		itemFrame.name:SetTextColor(r, g, b)
 		itemFrame.icon:SetTexture(item.lootIcon)
 
@@ -186,8 +191,8 @@ function Frame:CreateItemFrame(id)
 	local iconSize = ListLooterDB.frame.iconSize;
 	local fontSizeItem = ListLooterDB.frame.fontSizeItem;
 	local fontSizeCount = ListLooterDB.frame.fontSizeCount;
-	local fontItem = defaults.frame.fontItem;
-	local fontCount = defaults.frame.fontCount;
+	local fontItem = core.FontProvider:getFontName();
+	local fontCount = core.FontProvider:getFontName();
 	local posId = table.getn(UIFrame.Items)+1;
 	
 	local frame = core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrameItem"..posId, UIFrame);
@@ -283,11 +288,12 @@ function Frame:CreateItemFrame(id)
 	frame.count = count
 
 	local name = frame:CreateFontString(nil, "OVERLAY")
+	print("New item frame: "..fontSizeItem);
+	name:SetFont(fontItem, fontSizeItem, nil)
 	name:SetJustifyH"LEFT"
 	name:SetPoint("LEFT", frame)
 	name:SetPoint("RIGHT", iconFrame, "LEFT")
 	name:SetNonSpaceWrap(true)
-	name:SetFont(fontItem, fontSizeItem)
 	name:SetShadowOffset(.8, -.8)
 	name:SetShadowColor(0, 0, 0, 1)
 	frame.name = name
@@ -414,11 +420,9 @@ function Frame:UpdateSettings()
 	for i=1, table.getn(UIFrame.Items) do
 		local frame = UIFrame.Items[i];
 		
-		local fontName, sizeName, outlineName = frame.name:GetFont();
-		frame.name:SetFont(fontName, ListLooterDB.frame.fontSizeItem, outlineName);
+		frame.name:SetFont(core.FontProvider:getFontName(), ListLooterDB.frame.fontSizeItem, nil);
 		
-		local fontCount, sizeCount, outlineCount = frame.count:GetFont();
-		frame.count:SetFont(fontCount, ListLooterDB.frame.fontSizeCount, outlineCount);
+		frame.count:SetFont(core.FontProvider:getFontName(), ListLooterDB.frame.fontSizeCount, nil);
 		
 		frame:SetHeight(ListLooterDB.frame.iconSize);
 		frame.iconFrame:SetSize(ListLooterDB.frame.iconSize, ListLooterDB.frame.iconSize);

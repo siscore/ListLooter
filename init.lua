@@ -8,9 +8,7 @@ local LOOT_SLOT_CURRENCY = 3;
 -- Custom Slash Command
 --------------------------------------
 core.commands = {
-	["config"] = core.Config.ToggleConfig, -- this is a function (no knowledge of Config object)
-	["d"] = core.Frame.DebugFrame, -- show loot debug frame
-	
+	["config"] = core.Config.ToggleConfig, -- this is a function (no knowledge of Config object)	
 	["help"] = function()
 		print(" ");
 		core:Print("List of slash commands:")

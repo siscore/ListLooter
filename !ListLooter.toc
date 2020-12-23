@@ -14,3 +14,4 @@ config.lua
 frame.lua
 init.lua
 override.lua
+fontProvider.lua
