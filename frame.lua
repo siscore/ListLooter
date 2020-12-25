@@ -149,7 +149,7 @@ function Frame:AddItem(...)
 
 		if(item.lootQuantity > 1) then
 			itemFrame.count:SetText(item.lootQuantity)
-			--itemFrame.count:SetFont(fontCount, fontSizeCount, 'OUTLINE')
+			itemFrame.count:SetFont(fontCount, fontSizeCount, 'OUTLINE')
 			itemFrame.count:Show()
 		else
 			itemFrame.count:Hide()
@@ -176,7 +176,7 @@ function Frame:AddItem(...)
 		itemFrame.quality = item.lootQuality
 
 		itemFrame.name:SetText(item.lootName)
-		--itemFrame.name:SetFont(fontItem, fontSizeItem)
+		itemFrame.name:SetFont(fontItem, fontSizeItem)
 		itemFrame.name:SetTextColor(r, g, b)
 		itemFrame.icon:SetTexture(item.lootIcon)
 
@@ -288,7 +288,7 @@ function Frame:CreateItemFrame(id)
 	frame.count = count
 
 	local name = frame:CreateFontString(nil, "OVERLAY")
-	print("New item frame: "..fontSizeItem);
+	--print("New item frame: "..fontSizeItem);
 	name:SetFont(fontItem, fontSizeItem, nil)
 	name:SetJustifyH"LEFT"
 	name:SetPoint("LEFT", frame)
@@ -318,7 +318,7 @@ function Frame:ShowLootList()
 	UIFrame:SetBackdropBorderColor(color.r, color.g, color.b, .8);
 	
 	Frame:UpdateWidth();
-	
+
 	-- Blizzard uses strings here
 	if(GetCVar("lootUnderMouse") == "1") then
 		local x, y = GetCursorPosition();
@@ -332,6 +332,16 @@ function Frame:ShowLootList()
 	end
 	
 	UIFrame:Show();
+
+	--Fix bug with first open frame with custom font
+	local UIWidth = UIFrame:GetWidth();
+	--print("UIWidth: "..UIWidth);
+	if (UIWidth < 60) then 
+		UIFrame:Hide();
+		Frame:UpdateSettings();
+		Frame:UpdateWidth();
+		UIFrame:Show();
+	end
 end
 
 function Frame:GetVisibleListItems()

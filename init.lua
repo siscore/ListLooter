@@ -9,6 +9,7 @@ local LOOT_SLOT_CURRENCY = 3;
 --------------------------------------
 core.commands = {
 	["config"] = core.Config.ToggleConfig, -- this is a function (no knowledge of Config object)	
+	["test"] = function() core:ShowTestFrame() end,
 	["help"] = function()
 		print(" ");
 		core:Print("List of slash commands:")
@@ -113,6 +114,21 @@ function core:init(event, name)
 			core.Frame.LootFrameItemCleared("index", name);
 		end
 	end
+end
+
+function core:ShowTestFrame()
+	local config = core.Config:GetSettings();
+
+	if (config.isLootFrame) then
+		core.Frame.CloseLootFrame();
+		AddTestItem(182614, 1);
+		core.Frame.ShowLootList();
+	end
+end 
+
+function AddTestItem(id, index)
+	local itemName, _, itemRarity, _, _, _, _, _, _, itemTexture = GetItemInfo(id)
+	core.Frame.AddItem("table", index, itemTexture, itemName, 1, nil, itemRarity, false, false, false, true);
 end
 
 function core:Loot()
