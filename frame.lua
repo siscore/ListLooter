@@ -180,8 +180,15 @@ function Frame:AddItem(...)
 		itemFrame.name:SetText(item.lootName)
 		itemFrame.name:SetFont(fontItem, fontSizeItem)
 		itemFrame.name:SetTextColor(r, g, b)
-		itemFrame.icon:SetTexture(item.lootIcon)
-
+		
+		if Masque then  
+			itemFrame.masqueGroup = Masque:Group(core.GetAppName());
+			itemFrame.masqueGroup:AddButton(icon, { Icon = iconTexture })
+			itemFrame.icon = icon
+		else
+			itemFrame.icon:SetTexture(item.lootIcon);
+		end 
+		
 		maxLootQuality = math.max(maxLootQuality, item.lootQuality)
 
 		itemFrame:Enable()
@@ -262,22 +269,27 @@ function Frame:CreateItemFrame(id)
 		end
 	end);
 
-	local iconFrame = core.Override.CreateFrameA(nil, "Frame", "ListLooterLootFrameItemIcon", frame);
-	iconFrame:SetSize(iconSize, iconSize);
-	iconFrame:SetPoint("RIGHT", frame);
-	frame.iconFrame = iconFrame;
+	local iconFrame = nil;
 
 	if Masque then 
 		core.Debug(_,"Masque is here. "..core.GetAppName());
-		local icon =  core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrameItemIcon", frame)
-        icon:EnableMouse(false)
-        local iconTexture = icon:CreateTexture("ListLooterLootFrameItemIconMasque", "OVERLAY")
-        self.masqueGroup = Masque:Group(core.GetAppName());
-        self.masqueGroup:AddButton(icon, { Icon = iconTexture })
-        self.icon = icon
-        self.iconTexture = iconTexture
+		iconFrame =  core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrameItemIcon", frame)
+        iconFrame:EnableMouse(false)
+		iconFrame:SetSize(iconSize, iconSize);
+		iconFrame:SetPoint("RIGHT", frame);
+		frame.iconFrame = iconFrame;
+		
+        local icon = iconFrame:CreateTexture("ListLooterLootFrameItemIconMasque", "OVERLAY")
+        iconFrame.masqueGroup = Masque:Group(core.GetAppName());
+        iconFrame.masqueGroup:AddButton(iconFrame, { Icon = icon })
+        iconFrame.icon = icon
 	else
 		core.Debug(_, "Not Masque");
+		iconFrame = core.Override.CreateFrameA(nil, "Frame", "ListLooterLootFrameItemIcon", frame);
+		iconFrame:SetSize(iconSize, iconSize);
+		iconFrame:SetPoint("RIGHT", frame);
+		frame.iconFrame = iconFrame;
+	
 		local icon = iconFrame:CreateTexture(nil, "ARTWORK")
 		icon:SetAlpha(.8);
 		icon:SetTexCoord(.07, .93, .07, .93);
