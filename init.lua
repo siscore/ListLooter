@@ -136,6 +136,7 @@ function core:Loot()
 	local db = core.Config:GetLootDB();
 
 	local numLootItems = GetNumLootItems();
+		core:Debug("Core:Loot(): GetNumLootItems - "..numLootItems);
 		for i = 1, numLootItems, 1 do
 			local itemLink = GetLootSlotLink(i)
 			local item = core.Frame.GetEmptyItem();
@@ -144,16 +145,12 @@ function core:Loot()
 			
 			local ifLooted = false;
 			
-			--print(config.isLootEnable);
 			if config.isLootEnable == true then
 
 				if (config.isCurrency == true and not ifLooted) then
 					local lootSlotType = GetLootSlotType(i);
 					if item.currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
 						local info = C_CurrencyInfo.GetCurrencyInfo(item.currencyID);
-
-						--print('Currency Quantity: '..info.quantity);
-						--print('Currency Limit: '..info.maxQuantity);
 
 						if (info.maxQuantity == nil or info.maxQuantity == 0 or info.maxQuantity >= (info.quantity + item.lootQuantity)) then 
 							LootSlot(i);
@@ -200,14 +197,23 @@ function core:Loot()
 		end
 		
 		if (config.isAfterClose == true and config.isLootEnable == true) then
-			--print("wtf_close_loot()")
-			CloseLoot()
+			CloseLoot();
 		end
 		
 		if (config.isLootFrame) then
 			core.Frame.ShowLootList();
 		end
-end 
+end
+
+function core:Debug(msg)
+    for chatFrameIndex, chatFrameName in pairs(CHAT_FRAMES) do
+		local frame = _G[chatFrameName];
+		local frameName = GetChatWindowInfo(chatFrameIndex)
+		if frameName == "ListLooter" then 
+			frame:AddMessage(msg, 1, 1, 1, 0);
+		end
+    end
+end
 
 local events = CreateFrame("Frame");
 events:RegisterEvent("ADDON_LOADED");
