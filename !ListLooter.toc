@@ -5,6 +5,7 @@
 ## Author: SisCore
 ## Version: 2.6.2
 ## DefaultState: enabled
+## OptionalDeps: Masque
 ## SavedVariables: ListLooterDB
 ## X-Curse-Packaged-Version: 2.6.2
 ## X-Curse-Project-ID: 286508
@@ -15,3 +16,5 @@ frame.lua
 init.lua
 override.lua
 fontProvider.lua
+
+libs\LibStub\LibStub.lua

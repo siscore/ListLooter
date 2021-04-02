@@ -4,6 +4,8 @@
 local _, core = ...;
 core.Frame = {}; -- adds Frame table to addon namespace
 
+local Masque = LibStub("Masque", true)
+
 --------------------------------------
 -- Defaults (usually a database!)
 --------------------------------------
@@ -265,12 +267,24 @@ function Frame:CreateItemFrame(id)
 	iconFrame:SetPoint("RIGHT", frame);
 	frame.iconFrame = iconFrame;
 
-	local icon = iconFrame:CreateTexture(nil, "ARTWORK")
-	icon:SetAlpha(.8)
-	icon:SetTexCoord(.07, .93, .07, .93)
-	icon:SetAllPoints(iconFrame)
-	frame.icon = icon
-
+	if Masque then 
+		core.Debug(_,"Masque is here. "..core.GetAppName());
+		local icon =  core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrameItemIcon", frame)
+        icon:EnableMouse(false)
+        local iconTexture = icon:CreateTexture("ListLooterLootFrameItemIconMasque", "OVERLAY")
+        self.masqueGroup = Masque:Group(core.GetAppName());
+        self.masqueGroup:AddButton(icon, { Icon = iconTexture })
+        self.icon = icon
+        self.iconTexture = iconTexture
+	else
+		core.Debug(_, "Not Masque");
+		local icon = iconFrame:CreateTexture(nil, "ARTWORK")
+		icon:SetAlpha(.8);
+		icon:SetTexCoord(.07, .93, .07, .93);
+		icon:SetAllPoints(iconFrame);
+		frame.icon = icon;
+	end
+	
 	local quest = iconFrame:CreateTexture(nil, 'OVERLAY')
 	quest:SetTexture([[Interface\Minimap\ObjectIcons]])
 	quest:SetTexCoord(1/8, 2/8, 1/8, 2/8)

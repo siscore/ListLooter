@@ -4,6 +4,8 @@ local LOOT_SLOT_NONE = 0;
 local LOOT_SLOT_ITEM = 1;
 local LOOT_SLOT_MONEY = 2;
 local LOOT_SLOT_CURRENCY = 3;
+
+local AppName = "ListLooter";
 --------------------------------------
 -- Custom Slash Command
 --------------------------------------
@@ -213,6 +215,10 @@ function core:Debug(msg)
 			frame:AddMessage(msg, 1, 1, 1, 0);
 		end
     end
+end
+
+function core:GetAppName()
+	return AppName;
 end
 
 local events = CreateFrame("Frame");
