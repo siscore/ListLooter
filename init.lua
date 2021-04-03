@@ -124,15 +124,19 @@ function core:ShowTestFrame()
 	if (config.isLootFrame) then
 		core.Frame.CloseLootFrame();
 		AddTestItem(182614, 1);
-		--AddTestItem(179350, 1);
-		--AddTestItem(84101, 1);
+		AddTestItem(179350, 2);
+		AddTestItem(84101, 3);
 		core.Frame.ShowLootList();
 	end
 end 
 
 function AddTestItem(id, index)
 	local itemName, _, itemRarity, _, _, _, _, _, _, itemTexture = GetItemInfo(id)
-	core.Frame.AddItem("table", index, itemTexture, itemName, 1, nil, itemRarity, false, false, false, true);
+	if (itemName == nil) then
+		core:Debug("Item cache not ready...");
+	else
+		core.Frame.AddItem("table", index, itemTexture, itemName, 1, nil, itemRarity, false, false, false, true);
+	end
 end
 
 function core:Loot()
