@@ -116,6 +116,8 @@ function Frame:AddItem(...)
 	local fontSizeItem = ListLooterDB.frame.fontSizeItem;
 	local fontSizeCount = ListLooterDB.frame.fontSizeCount;
 
+	local iconSize = ListLooterDB.frame.iconSize;
+
 	item.index = lootInfo[1];
 	item.lootIcon = lootInfo[2];
 	item.lootName = lootInfo[3];
@@ -177,17 +179,11 @@ function Frame:AddItem(...)
 		itemFrame.isQuestItem = item.isQuestItem
 		itemFrame.quality = item.lootQuality
 
+		itemFrame:SetSize(iconSize, iconSize);
 		itemFrame.name:SetText(item.lootName)
 		itemFrame.name:SetFont(fontItem, fontSizeItem)
 		itemFrame.name:SetTextColor(r, g, b)
-		
-		if Masque then  
-			itemFrame.masqueGroup = Masque:Group(core.GetAppName());
-			itemFrame.masqueGroup:AddButton(icon, { Icon = iconTexture })
-			itemFrame.icon = icon
-		else
-			itemFrame.icon:SetTexture(item.lootIcon);
-		end 
+		itemFrame.icon:SetTexture(item.lootIcon);
 		
 		maxLootQuality = math.max(maxLootQuality, item.lootQuality)
 
@@ -269,32 +265,22 @@ function Frame:CreateItemFrame(id)
 		end
 	end);
 
-	local iconFrame = nil;
+	local iconFrame = core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrameItemIcon", frame);
+	iconFrame:EnableMouse(false)
+	iconFrame:SetSize(iconSize, iconSize);
+	iconFrame:SetPoint("RIGHT", frame);
+	frame.iconFrame = iconFrame;
 
-	if Masque then 
-		core.Debug(_,"Masque is here. "..core.GetAppName());
-		iconFrame =  core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrameItemIcon", frame)
-        iconFrame:EnableMouse(false)
-		iconFrame:SetSize(iconSize, iconSize);
-		iconFrame:SetPoint("RIGHT", frame);
-		frame.iconFrame = iconFrame;
-		
-        local icon = iconFrame:CreateTexture("ListLooterLootFrameItemIconMasque", "OVERLAY")
-        iconFrame.masqueGroup = Masque:Group(core.GetAppName());
+	local icon = iconFrame:CreateTexture(nil, "ARTWORK")
+	icon:SetAlpha(.8);
+	icon:SetTexCoord(.07, .93, .07, .93);
+	icon:SetAllPoints(iconFrame);
+	frame.icon = icon;
+
+	if (Masque) then 
+		iconFrame.masqueGroup = Masque:Group(core.GetAppName());
         iconFrame.masqueGroup:AddButton(iconFrame, { Icon = icon })
         iconFrame.icon = icon
-	else
-		core.Debug(_, "Not Masque");
-		iconFrame = core.Override.CreateFrameA(nil, "Frame", "ListLooterLootFrameItemIcon", frame);
-		iconFrame:SetSize(iconSize, iconSize);
-		iconFrame:SetPoint("RIGHT", frame);
-		frame.iconFrame = iconFrame;
-	
-		local icon = iconFrame:CreateTexture(nil, "ARTWORK")
-		icon:SetAlpha(.8);
-		icon:SetTexCoord(.07, .93, .07, .93);
-		icon:SetAllPoints(iconFrame);
-		frame.icon = icon;
 	end
 	
 	local quest = iconFrame:CreateTexture(nil, 'OVERLAY')
@@ -314,7 +300,6 @@ function Frame:CreateItemFrame(id)
 	frame.count = count
 
 	local name = frame:CreateFontString(nil, "OVERLAY")
-	--print("New item frame: "..fontSizeItem);
 	name:SetFont(fontItem, fontSizeItem, nil)
 	name:SetJustifyH"LEFT"
 	name:SetPoint("LEFT", frame)
@@ -382,11 +367,15 @@ function Frame:GetVisibleListItems()
 end
 
 function Frame:AnchorItemsFrames()
-	local frameSize = math.max(defaults.frame.iconSize, defaults.frame.fontSizeItem);
-	local iconSize = defaults.frame.iconSize;
+	local frameSize = math.max(ListLooterDB.frame.iconSize, ListLooterDB.frame.fontSizeItem);
+	local iconSize = ListLooterDB.frame.iconSize;
 	local shownSlots = 0;
-
 	local prevShown;
+
+	if Masque then
+		frameSize = math.max(ListLooterDB.frame.iconSize+4, ListLooterDB.frame.fontSizeItem);
+	end
+
 	for i=1, table.getn(UIFrame.Items) do
 		local frame = UIFrame.Items[i]
 		if(frame:IsShown()) then
@@ -456,11 +445,19 @@ function Frame:UpdateSettings()
 	for i=1, table.getn(UIFrame.Items) do
 		local frame = UIFrame.Items[i];
 		
-		frame.name:SetFont(core.FontProvider:getFontName(), ListLooterDB.frame.fontSizeItem, nil);
-		
+		frame.name:SetFont(core.FontProvider:getFontName(), ListLooterDB.frame.fontSizeItem, nil);	
 		frame.count:SetFont(core.FontProvider:getFontName(), ListLooterDB.frame.fontSizeCount, nil);
-		
+
 		frame:SetHeight(ListLooterDB.frame.iconSize);
+		
+		if Masque then
+			frame.iconFrame:SetSize(ListLooterDB.frame.iconSize+4, ListLooterDB.frame.iconSize+4);
+			if frame.iconFrame.masqueGroup then
+				frame.iconFrame.masqueGroup:ReSkin(true);
+			end
+		else		
+			frame.iconFrame:SetSize(ListLooterDB.frame.iconSize, ListLooterDB.frame.iconSize);
+		end
 		frame.iconFrame:SetSize(ListLooterDB.frame.iconSize, ListLooterDB.frame.iconSize);
 
 		frame.quest:SetSize(ListLooterDB.frame.iconSize * .8, ListLooterDB.frame.iconSize * .8);

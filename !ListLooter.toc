@@ -3,11 +3,11 @@
 ## Notes: This is a simple addon which replace default loot frame. Including creating a list of items to automatically collect.
 ## Notes-ruRU: Замещает стандартное окно сбора добычи. Позволяет создавать списки для автоматического сбора.
 ## Author: SisCore
-## Version: 2.6.2
+## Version: 2.7.0
 ## DefaultState: enabled
 ## OptionalDeps: Masque
 ## SavedVariables: ListLooterDB
-## X-Curse-Packaged-Version: 2.6.2
+## X-Curse-Packaged-Version: 2.7.0
 ## X-Curse-Project-ID: 286508
 ## X-Curse-Project-Name: ListLooter
 localization.lua

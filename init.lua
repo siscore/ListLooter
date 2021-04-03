@@ -124,6 +124,8 @@ function core:ShowTestFrame()
 	if (config.isLootFrame) then
 		core.Frame.CloseLootFrame();
 		AddTestItem(182614, 1);
+		--AddTestItem(179350, 1);
+		--AddTestItem(84101, 1);
 		core.Frame.ShowLootList();
 	end
 end 
