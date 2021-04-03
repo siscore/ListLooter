@@ -20,3 +20,4 @@ fontProvider.lua
 
 ##libs
 libs\LibStub\LibStub.lua
+
