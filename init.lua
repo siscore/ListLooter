@@ -141,6 +141,11 @@ function core:Loot()
 
 	local numLootItems = GetNumLootItems();
 		core:Debug("Core:Loot(): GetNumLootItems - "..numLootItems);
+		--wtf classic?
+		if numLootItems == 0 then 
+			core:Debug("Core:Loot(): Look like nothig to loot...");
+			CloseLoot();
+		end 
 		for i = 1, numLootItems, 1 do
 			local itemLink = GetLootSlotLink(i)
 			local item = core.Frame.GetEmptyItem();

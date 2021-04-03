@@ -101,6 +101,11 @@ function Frame:Init()
 	end)
 	
 	UIFrame.Items = {};
+	
+	if (Masque) then 
+		UIFrame.masqueGroup = Masque:Group(core.GetAppName());
+        --iconFrame.masqueGroup:AddButton(iconFrame, { Icon = icon })
+	end
 end
 
 function Frame:GetEmptyItem()
@@ -132,7 +137,7 @@ function Frame:AddItem(...)
 	local itemFrame = UIFrame.Items[item.index];
 	
 	if (not itemFrame) then
-		itemFrame = Frame:CreateItemFrame();
+		itemFrame = Frame:CreateItemFrame(UIFrame.masqueGroup);
 		table.insert(UIFrame.Items, itemFrame);
 	end 
 	
@@ -192,7 +197,7 @@ function Frame:AddItem(...)
 	end 
 end
 
-function Frame:CreateItemFrame(id)
+function Frame:CreateItemFrame(masqueGroup)
 	local iconSize = ListLooterDB.frame.iconSize;
 	local fontSizeItem = ListLooterDB.frame.fontSizeItem;
 	local fontSizeCount = ListLooterDB.frame.fontSizeCount;
@@ -278,8 +283,7 @@ function Frame:CreateItemFrame(id)
 	frame.icon = icon;
 
 	if (Masque) then 
-		iconFrame.masqueGroup = Masque:Group(core.GetAppName());
-        iconFrame.masqueGroup:AddButton(iconFrame, { Icon = icon })
+        masqueGroup:AddButton(iconFrame, { Icon = icon })
         iconFrame.icon = icon
 	end
 	
