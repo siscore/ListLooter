@@ -113,6 +113,7 @@ function core:init(event, name)
 	if (event == "LOOT_SLOT_CLEARED") then
 		local config = core.Config:GetSettings();
 		if (config.isLootFrame) then
+			core:Debug("LOOT_SLOT_CLEARED: index: "..name);
 			core.Frame.LootFrameItemCleared("index", name);
 		end
 	end
@@ -124,15 +125,19 @@ function core:ShowTestFrame()
 	if (config.isLootFrame) then
 		core.Frame.CloseLootFrame();
 		AddTestItem(182614, 1);
-		--AddTestItem(179350, 1);
-		--AddTestItem(84101, 1);
+		AddTestItem(179350, 2);
+		AddTestItem(84101, 3);
 		core.Frame.ShowLootList();
 	end
 end 
 
 function AddTestItem(id, index)
 	local itemName, _, itemRarity, _, _, _, _, _, _, itemTexture = GetItemInfo(id)
-	core.Frame.AddItem("table", index, itemTexture, itemName, 1, nil, itemRarity, false, false, false, true);
+	if (itemName == nil) then
+		core:Debug("Item cache not ready...");
+	else
+		core.Frame.AddItem("table", index, itemTexture, itemName, 1, nil, itemRarity, false, false, false, true);
+	end
 end
 
 function core:Loot()
@@ -141,6 +146,11 @@ function core:Loot()
 
 	local numLootItems = GetNumLootItems();
 		core:Debug("Core:Loot(): GetNumLootItems - "..numLootItems);
+		--wtf classic?
+		if numLootItems == 0 then 
+			core:Debug("Core:Loot(): Look like nothig to loot...");
+			CloseLoot();
+		end 
 		for i = 1, numLootItems, 1 do
 			local itemLink = GetLootSlotLink(i)
 			local item = core.Frame.GetEmptyItem();
@@ -157,10 +167,12 @@ function core:Loot()
 						local info = C_CurrencyInfo.GetCurrencyInfo(item.currencyID);
 
 						if (info.maxQuantity == nil or info.maxQuantity == 0 or info.maxQuantity >= (info.quantity + item.lootQuantity)) then 
+							core:Debug("Core:Loot(): Loot money or currency. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 							LootSlot(i);
 							ifLooted = true;
 						end 
 					elseif item.currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
+						core:Debug("Core:Loot(): Loot money or currency. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 						LootSlot(i);
 						ifLooted = true;
 					end
@@ -168,6 +180,7 @@ function core:Loot()
 			
 				if (config.isQuestItem == true and not ifLooted) then 
 					if item.isQuestItem == true then 
+						core:Debug("Core:Loot(): Loot quest item. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 						LootSlot(i);
 						ifLooted = true;
 					end 
@@ -176,6 +189,7 @@ function core:Loot()
 				if (config.isFishingLoot == true and not ifLooted) then 
 					local isFishingLoot = IsFishingLoot();
 					if (isFishingLoot) then 
+						core:Debug("Core:Loot(): Loot fishing loot. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 						LootSlot(i);
 						ifLooted = true;
 					end
@@ -186,6 +200,7 @@ function core:Loot()
 						if itemLink ~= nil then 
 							local _, _, Id = string.find(itemLink, "item:(%d+):")
 							if db[c] == Id then
+								core:Debug("Core:Loot(): Loot item. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 								LootSlot(i);
 								ifLooted = true;
 								break
