@@ -113,6 +113,7 @@ function core:init(event, name)
 	if (event == "LOOT_SLOT_CLEARED") then
 		local config = core.Config:GetSettings();
 		if (config.isLootFrame) then
+			core:Debug("LOOT_SLOT_CLEARED: index: "..name);
 			core.Frame.LootFrameItemCleared("index", name);
 		end
 	end
@@ -166,10 +167,12 @@ function core:Loot()
 						local info = C_CurrencyInfo.GetCurrencyInfo(item.currencyID);
 
 						if (info.maxQuantity == nil or info.maxQuantity == 0 or info.maxQuantity >= (info.quantity + item.lootQuantity)) then 
+							core:Debug("Core:Loot(): Loot money or currency. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 							LootSlot(i);
 							ifLooted = true;
 						end 
 					elseif item.currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
+						core:Debug("Core:Loot(): Loot money or currency. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 						LootSlot(i);
 						ifLooted = true;
 					end
@@ -177,6 +180,7 @@ function core:Loot()
 			
 				if (config.isQuestItem == true and not ifLooted) then 
 					if item.isQuestItem == true then 
+						core:Debug("Core:Loot(): Loot quest item. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 						LootSlot(i);
 						ifLooted = true;
 					end 
@@ -185,6 +189,7 @@ function core:Loot()
 				if (config.isFishingLoot == true and not ifLooted) then 
 					local isFishingLoot = IsFishingLoot();
 					if (isFishingLoot) then 
+						core:Debug("Core:Loot(): Loot fishing loot. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 						LootSlot(i);
 						ifLooted = true;
 					end
@@ -195,6 +200,7 @@ function core:Loot()
 						if itemLink ~= nil then 
 							local _, _, Id = string.find(itemLink, "item:(%d+):")
 							if db[c] == Id then
+								core:Debug("Core:Loot(): Loot item. Slot: "..i .." "..item.lootIcon.." "..item.lootName);
 								LootSlot(i);
 								ifLooted = true;
 								break
