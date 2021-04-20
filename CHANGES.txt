@@ -1,10 +1,10 @@
-lightweight tag 45d18fb94e985f246846979201dfa124730fdf34 2.7.3-release
+tag 716264a80ca0afdbc01691e90f3b389f3b09c58c 2.8.0-release
 Author:	Терехов Андрей <terehovaa@quarta.su>
-Date:	Tue Apr 6 11:19:16 2021 +0300
+Date:	Tue Apr 20 12:32:04 2021 +0300
 
-commit 45d18fb94e985f246846979201dfa124730fdf34
+commit cdb17dd1ae0635bbb6806a5a566f2943b0f9e31f
 Author: Терехов Андрей <terehovaa@quarta.su>
-Date:   Tue Apr 6 11:19:16 2021 +0300
+Date:   Tue Apr 20 12:26:49 2021 +0300
 
-    fix toc libs priority
+    Add LibSharedMedia support
 
