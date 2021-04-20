@@ -2,66 +2,89 @@
 -- Namespaces
 --------------------------------------
 local _, core = ...;
+local LSM = nil;
+local LSM3 = LibStub("LibSharedMedia-3.0", true)
+local LSM2 = LibStub("LibSharedMedia-2.0", true)
+local SML = LibStub("SharedMedia-1.0", true)
+
 core.FontProvider = {}; -- adds Config table to addon namespace
 
 local FontProvider = core.FontProvider;
-local fontFolderName = "Interface\\AddOns\\!ListLooter\\Fonts\\"
+local fontFolderName = "Interface\\AddOns\\!ListLooter\\Fonts\\";
+local defaultFont = GameFontWhite:GetFont();
 
-local fontsList = 
+local fontsList =
 {
-    {name = "Default", file = ""},
-    {name = "Enigmatic", file ="EnigmaU_2"}
+    Default = defaultFont,
+    Enigmatic = fontFolderName.."EnigmaU_2.ttf"
 }
---------------------------------------
+
+----------------------------------
 -- FontProvider functions
 --------------------------------------
 
-function FontProvider:getFontName()
-    local config = core.Config:GetSettings();
-    local result = GameFontWhite:GetFont();
-    local fontName = trim(config.customFontName);
-    local isDefault = (fontName == "Default");
+function FontProvider:Init()
+    if (not LSM) then 
+        if (not SML) then  
+            SML = LibStub("SharedMedia-1.0", true);
 
-    if (not isDefault) then
-        local result = fontFolderName..self:GetFileName();
-        local extension = ".ttf";
-
-        if (not ends_with(result, extension)) then
-            result = result..".ttf";
+            if (SML) then 
+                LSM = SML;
+                LSM:Register(LSM.MediaType.FONT, "Enigmatic", fontFolderName.."EnigmaU_2.ttf");
+            end
+        else
+            LSM = SML;
         end
 
-        --print(result);
-        return result;
-    end 
+        if (not LSM2) then 
+            LSM2 = LibStub("LibSharedMedia-2.0", true);
+            if (LSM2) then 
+                LSM = LSM2;
+                LSM:Register(LSM.MediaType.FONT, "Enigmatic", fontFolderName.."EnigmaU_2.ttf");
+            end
+        else
+            LSM = LSM2;
+        end
 
-    --print(result);
-    return result;
+        if (not LSM3) then 
+            LSM3 = LibStub("LibSharedMedia-3.0", true)
+            if (LSM3) then 
+                LSM = LSM3;
+                LSM:Register(LSM.MediaType.FONT, "Enigmatic", fontFolderName.."EnigmaU_2.ttf", LSM.LOCALE_BIT_ruRU);
+            end
+        else
+            LSM = LSM3;
+        end
+
+        if (LSM) then 
+            core.Config.LSMDetected();
+        end
+    end
 end
 
 function FontProvider:GetFontsName()
-    local result = {};
-    for c=1, table.getn(fontsList), 1 do
-        table.insert(result, fontsList[c].name);
-    end
-
-    return result;
+    if (LSM) then 
+        return LSM:HashTable(LSM.MediaType.FONT);
+    else
+        return fontsList;
+    end;
 end
 
-function FontProvider:GetFileName()
+function FontProvider:GetFontName()
     local config = core.Config:GetSettings();
-    for c=1, table.getn(fontsList), 1 do
-        if (fontsList[c].name == trim(config.customFontName)) then 
-            return fontsList[c].file;
-        end 
+    local hashTable = nil;
+
+    if (LSM) then
+        hashTable = LSM:HashTable(LSM.MediaType.FONT);
+    else
+        hashTable = fontsList;
     end
 
-    return GameFontWhite:GetFont();
-end
+    for key, item in pairs(hashTable) do
+        if (key == config.customFontName) then
+            return item;
+        end
+    end
 
-function trim(s)
-    return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
-end
-
-function ends_with(str, ending)
-    return ending == "" or str:sub(-#ending) == ending
+    return defaultFont;
 end

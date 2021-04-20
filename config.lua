@@ -57,6 +57,24 @@ function Config:Toggle()
 	menu:SetShown(not menu:IsShown());
 end
 
+function Config:LSMDetected()
+	UIConfig.ddCustomFont:Hide();
+	local fontsList = core.FontProvider:GetFontsName();
+	local font_opts = {
+		["name"]  ="custom_font_name",
+		["parent"] = UIConfig,
+		["title"] = L_OPTIONS_CUSTOMFONTNAME,
+		["items"] = fontsList,
+		["defaultVal"] = ListLooterDB.settings.customFontName or "Default",
+		["changeFunc"] = function(dropdown_frame, dropdown_val)
+			ListLooterDB.settings.customFontName = dropdown_val;
+			core.Frame:UpdateSettings();
+		end
+	}
+	UIConfig.ddCustomFont = Config:CreateDropdown(font_opts);
+	UIConfig.ddCustomFont:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", -12, -15);
+end
+
 function Config:ToggleConfig()
 	Config:Toggle();
 	InterfaceOptionsFrame_OpenToCategory([[|cff00ccffList Looter|r]]);
@@ -538,8 +556,8 @@ function Config:CreateDropdown(opts)
     local dd_title = dropdown:CreateFontString(dropdown, 'OVERLAY', 'GameFontNormalSmall')
     dd_title:SetPoint("TOPLEFT", 20, 10)
 
-	for _, item in pairs(menu_items) do
-        dd_title:SetText(item)
+	for key, item in pairs(menu_items) do
+        dd_title:SetText(key)
         local text_width = dd_title:GetStringWidth() + 20
         if text_width > dropdown_width then
             dropdown_width = text_width + 100
@@ -553,7 +571,7 @@ function Config:CreateDropdown(opts)
     UIDropDownMenu_Initialize(dropdown, function(self, level, _)
         local info = UIDropDownMenu_CreateInfo()
         for key, val in pairs(menu_items) do
-            info.text = val;
+            info.text = key;
             info.checked = (ListLooterDB.settings.customFontName == val)
             info.menuList= key
             info.hasArrow = false

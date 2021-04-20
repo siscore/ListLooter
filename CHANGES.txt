@@ -1,16 +1,10 @@
-lightweight tag df7b3a285c3fc69e387befa5124aa5264a4e9bdb 2.4-alpha
-Author:	SisCore <siscore@me.com>
-Date:	Sun Nov 22 21:46:54 2020 +0300
+lightweight tag 45d18fb94e985f246846979201dfa124730fdf34 2.7.3-release
+Author:	Терехов Андрей <terehovaa@quarta.su>
+Date:	Tue Apr 6 11:19:16 2021 +0300
 
-commit 39519b1841842e8d4c5816a769418beb2d3bd0e4
-Author: SisCore <siscore@me.com>
-Date:   Sun Nov 22 21:38:14 2020 +0300
+commit 45d18fb94e985f246846979201dfa124730fdf34
+Author: Терехов Андрей <terehovaa@quarta.su>
+Date:   Tue Apr 6 11:19:16 2021 +0300
 
-    fix some error on loot currency without autoloot option on
-
-commit 39519b1841842e8d4c5816a769418beb2d3bd0e4
-Author: SisCore <siscore@me.com>
-Date:   Sun Nov 22 21:38:14 2020 +0300
-
-    fix some error on loot currency without autoloot option on
+    fix toc libs priority
 
