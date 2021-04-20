@@ -4,7 +4,7 @@
 local _, core = ...;
 core.Frame = {}; -- adds Frame table to addon namespace
 
-local Masque = LibStub("Masque", true)
+local Masque = LibStub and LibStub("Masque", true)
 
 --------------------------------------
 -- Defaults (usually a database!)
@@ -105,6 +105,8 @@ function Frame:Init()
 	if (Masque) then 
 		UIFrame.masqueGroup = Masque:Group(core.GetAppName());
 	end
+
+	core.FontProvider.Init();
 end
 
 function Frame:GetEmptyItem()
@@ -115,8 +117,8 @@ function Frame:AddItem(...)
 	local lootInfo = {...};
 	local item = Frame:GetEmptyItem();
 
-	local fontItem = core.FontProvider:getFontName();
-	local fontCount = core.FontProvider:getFontName();
+	local fontItem = core.FontProvider:GetFontName();
+	local fontCount = core.FontProvider:GetFontName();
 	local fontSizeItem = ListLooterDB.frame.fontSizeItem;
 	local fontSizeCount = ListLooterDB.frame.fontSizeCount;
 
@@ -200,8 +202,8 @@ function Frame:CreateItemFrame(masqueGroup)
 	local iconSize = ListLooterDB.frame.iconSize;
 	local fontSizeItem = ListLooterDB.frame.fontSizeItem;
 	local fontSizeCount = ListLooterDB.frame.fontSizeCount;
-	local fontItem = core.FontProvider:getFontName();
-	local fontCount = core.FontProvider:getFontName();
+	local fontItem = core.FontProvider:GetFontName();
+	local fontCount = core.FontProvider:GetFontName();
 	local posId = table.getn(UIFrame.Items)+1;
 	
 	local frame = core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrameItem"..posId, UIFrame);
@@ -448,8 +450,8 @@ function Frame:UpdateSettings()
 	for i=1, table.getn(UIFrame.Items) do
 		local frame = UIFrame.Items[i];
 		
-		frame.name:SetFont(core.FontProvider:getFontName(), ListLooterDB.frame.fontSizeItem, nil);	
-		frame.count:SetFont(core.FontProvider:getFontName(), ListLooterDB.frame.fontSizeCount, nil);
+		frame.name:SetFont(core.FontProvider:GetFontName(), ListLooterDB.frame.fontSizeItem, nil);	
+		frame.count:SetFont(core.FontProvider:GetFontName(), ListLooterDB.frame.fontSizeCount, nil);
 
 		frame:SetHeight(ListLooterDB.frame.iconSize);
 		
