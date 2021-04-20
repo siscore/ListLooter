@@ -58,11 +58,12 @@ function Config:Toggle()
 end
 
 function Config:LSMDetected()
-	UIConfig.ddCustomFont:Hide();
+	local menu = UIConfig or Config:CreateMenu();
+	menu.ddCustomFont:Hide();
 	local fontsList = core.FontProvider:GetFontsName();
 	local font_opts = {
 		["name"]  ="custom_font_name",
-		["parent"] = UIConfig,
+		["parent"] = menu,
 		["title"] = L_OPTIONS_CUSTOMFONTNAME,
 		["items"] = fontsList,
 		["defaultVal"] = ListLooterDB.settings.customFontName or "Default",
@@ -71,8 +72,8 @@ function Config:LSMDetected()
 			core.Frame:UpdateSettings();
 		end
 	}
-	UIConfig.ddCustomFont = Config:CreateDropdown(font_opts);
-	UIConfig.ddCustomFont:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", -12, -15);
+	menu.ddCustomFont = Config:CreateDropdown(font_opts);
+	menu.ddCustomFont:SetPoint("TOPLEFT", menu.cbAfterClose, "BOTTOMLEFT", -12, -15);
 end
 
 function Config:ToggleConfig()
