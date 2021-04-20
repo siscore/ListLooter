@@ -7,7 +7,7 @@
 ## DefaultState: enabled
 ## OptionalDeps: Masque, LibSharedMedia-3.0, LibSharedMedia-2.0, SharedMediaLib
 ## SavedVariables: ListLooterDB
-## X-Curse-Packaged-Version: 2.8.0
+## X-Curse-Packaged-Version: 2.8.0 
 ## X-Curse-Project-ID: 286508
 ## X-Curse-Project-Name: ListLooter
 
