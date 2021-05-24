@@ -5,19 +5,18 @@ local _, core = ...;
 core.Override = {}; -- adds Config table to addon namespace
 
 local Override = core.Override;
+local Retail = 90000
+local TBC = 20000
+local RLC = 30000
 
 --------------------------------------
 -- Override functions
 --------------------------------------
 
 function Override:CreateFrameA(frameType, name, parent, template)
-	local _, _, _, wowtocversion = GetBuildInfo();
-	
-	--print(frameType);
-	
-	if wowtocversion and wowtocversion > 90000 then 
+	if Override:CheckVerion() then 
 		if (not template) then 
-			template = 'BackdropTemplate';
+			template = (BackdropTemplateMixin and "BackdropTemplate" or nil);
 		end 
 		
 		local newFrame = CreateFrame(frameType, name, parent, template);
@@ -29,12 +28,19 @@ function Override:CreateFrameA(frameType, name, parent, template)
 end
 
 function Override:ApplyBackdropA(frame, backdrop)
-	local _, _, _, wowtocversion = GetBuildInfo();
-	
-	if (wowtocversion and wowtocversion > 90000) then 
+	if Override:CheckVerion() then 
 		frame.backdropInfo = backdrop;
 		frame:ApplyBackdrop();
 	else 
 		frame:SetBackdrop(backdrop);
 	end
+end
+
+function Override:CheckVerion()
+	local _, _, _, wowtocversion = GetBuildInfo();
+	if wowtocversion and ((wowtocversion >= TBC and wowtocversion < RLC) or  wowtocversion > 90000) then 
+		return true;
+	end
+
+	return false;
 end
