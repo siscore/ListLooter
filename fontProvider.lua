@@ -13,11 +13,10 @@ local FontProvider = core.FontProvider;
 local fontFolderName = "Interface\\AddOns\\!ListLooter\\Fonts\\";
 local defaultFont = GameFontWhite:GetFont();
 
---Fonts if not LSM used
-local fontsList =
-{
+-- Fonts if not LSM used
+local fontsList = {
     Default = defaultFont,
-    Enigmatic = fontFolderName.."EnigmaU_2.ttf"
+    Enigmatic = fontFolderName .. "EnigmaU_2.ttf"
 }
 
 --------------------------------------
@@ -28,27 +27,21 @@ function FontProvider:Init()
     if (not LSM) then
         if (not SML) then
             SML = LibStub("SharedMedia-1.0", true);
-            if (SML) then
-                LSM = SML;
-            end
+            if (SML) then LSM = SML; end
         else
             LSM = SML;
         end
 
         if (not LSM2) then
             LSM2 = LibStub("LibSharedMedia-2.0", true);
-            if (LSM2) then
-                LSM = LSM2;
-            end
+            if (LSM2) then LSM = LSM2; end
         else
             LSM = LSM2;
         end
 
         if (not LSM3) then
             LSM3 = LibStub("LibSharedMedia-3.0", true)
-            if (LSM3) then
-                LSM = LSM3;
-            end
+            if (LSM3) then LSM = LSM3; end
         else
             LSM = LSM3;
         end
@@ -62,7 +55,10 @@ end
 
 function FontProvider:RegisterCustomFonts()
     local customFontsList = {
-        Enigmatic = {fontFolderName.."EnigmaU_2.ttf", LSM.LOCALE_BIT_ruRU+LSM.LOCALE_BIT_western}
+        Enigmatic = {
+            fontFolderName .. "EnigmaU_2.ttf",
+            LSM.LOCALE_BIT_ruRU + LSM.LOCALE_BIT_western
+        }
     }
 
     for key, val in pairs(customFontsList) do
@@ -79,7 +75,7 @@ function FontProvider:GetFontsName()
         return LSM:HashTable(LSM.MediaType.FONT);
     else
         return fontsList;
-    end;
+    end
 end
 
 function FontProvider:GetFontName()
@@ -93,9 +89,7 @@ function FontProvider:GetFontName()
     end
 
     for key, item in pairs(hashTable) do
-        if (key == config.customFontName) then
-            return item;
-        end
+        if (key == config.customFontName) then return item; end
     end
 
     return defaultFont;
