@@ -18,7 +18,7 @@ jobs:
         uses: nebularg/actions-luacheck@v1
         with:
           args: "--no-color -q"
-          annotate: error
+          annotate: warning
       
       # Runs a single command using the runners shell
       - name: Run a one-line script
