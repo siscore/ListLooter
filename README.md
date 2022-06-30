@@ -12,8 +12,8 @@ Support link items to chat by Shift + LMC
 Adding to list by Alt + LMC
 
 Support:
-Masque
-LibSharedMedia-3.0
+- Masque
+- LibSharedMedia-3.0
 
 ListLooter - это простой аддон, который позволяет составлять список предметов для автоматического сбора.
 
@@ -29,5 +29,5 @@ ListLooter - это простой аддон, который позволяет
 Добавить предмет в список для сбора: Alt + ЛКМ
 
 Поддерживает:
-Masque
-LibSharedMedia-3.0
+- Masque
+- LibSharedMedia-3.0
