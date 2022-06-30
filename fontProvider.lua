@@ -2,27 +2,29 @@
 -- Namespaces
 --------------------------------------
 local _, core = ...;
+core.FontProvider = {}; -- adds FontProvider table to addon namespace
+
 local LSM = nil;
 local LSM3 = LibStub("LibSharedMedia-3.0", true)
 local LSM2 = LibStub("LibSharedMedia-2.0", true)
 local SML = LibStub("SharedMedia-1.0", true)
 
-core.FontProvider = {}; -- adds FontProvider table to addon namespace
-
 local FontProvider = core.FontProvider;
-local fontFolderName = "Interface\\AddOns\\!ListLooter\\Fonts\\";
 local defaultFont = GameFontWhite:GetFont();
 
 -- Fonts if not LSM used
-local fontsList = {
-    Default = defaultFont,
-    Enigmatic = fontFolderName .. "EnigmaU_2.ttf"
-}
+function FontProvider:GetFontsList()
+    local appName = core.Config:GetAppName();
+	local fontFolderName = "Interface\\AddOns\\" .. appName .. "\\Fonts\\";
+    return {
+        Default = defaultFont,
+        Enigmatic = fontFolderName .. "EnigmaU_2.ttf"
+    }
+end
 
 --------------------------------------
 -- FontProvider functions
 --------------------------------------
-
 function FontProvider:Init()
     if (not LSM) then
         if (not SML) then
@@ -54,6 +56,8 @@ function FontProvider:Init()
 end
 
 function FontProvider:RegisterCustomFonts()
+	local appName = core.Config:GetAppName();
+	local fontFolderName = "Interface\\AddOns\\" .. appName .. "\\Fonts\\";
     local customFontsList = {
         Enigmatic = {
             fontFolderName .. "EnigmaU_2.ttf",
@@ -74,7 +78,7 @@ function FontProvider:GetFontsName()
     if (LSM) then
         return LSM:HashTable(LSM.MediaType.FONT);
     else
-        return fontsList;
+        return FontProvider:GetFontsList();
     end
 end
 
@@ -85,7 +89,7 @@ function FontProvider:GetFontName()
     if (LSM) then
         hashTable = LSM:HashTable(LSM.MediaType.FONT);
     else
-        hashTable = fontsList;
+        hashTable = FontProvider:GetFontsList();
     end
 
     for key, item in pairs(hashTable) do

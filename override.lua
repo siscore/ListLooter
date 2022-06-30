@@ -5,9 +5,6 @@ local _, core = ...;
 core.Override = {}; -- adds Config table to addon namespace
 
 local Override = core.Override;
-local Retail = 90000
-local TBC = 20000
-local RLC = 30000
 
 --------------------------------------
 -- Override functions
@@ -37,11 +34,5 @@ function Override:ApplyBackdropA(frame, backdrop)
 end
 
 function Override:CheckVerion()
-    local _, _, _, wowtocversion = GetBuildInfo();
-    if wowtocversion and
-        ((wowtocversion >= TBC and wowtocversion < RLC) or wowtocversion > 90000) then
-        return true;
-    end
-
-    return false;
+    return true;
 end

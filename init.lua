@@ -5,7 +5,6 @@ local LOOT_SLOT_ITEM = 1;
 local LOOT_SLOT_MONEY = 2;
 local LOOT_SLOT_CURRENCY = 3;
 
-local AppName = "ListLooter";
 --------------------------------------
 -- Custom Slash Command
 --------------------------------------
@@ -62,9 +61,10 @@ end
 
 -- WARNING: self automatically becomes events frame!
 function core:init(event, name)
+	local appName = core.Config:GetAppName();
     if (event == "ADDON_LOADED") then core.FontProvider.Init(); end
 
-    if (name == "!ListLooter" and event == "ADDON_LOADED") then
+    if (name == appName and event == "ADDON_LOADED") then
         -- allows using left and right buttons to move through chat 'edit' box
         for i = 1, NUM_CHAT_WINDOWS do
             _G["ChatFrame" .. i .. "EditBox"]:SetAltArrowKeyMode(false);
@@ -95,7 +95,7 @@ function core:init(event, name)
             core.Frame.HideBlizzardLootFrame("isHide", true);
         end
 
-        table.insert(UISpecialFrames, "!ListLooter");
+        table.insert(UISpecialFrames, appName);
 
         core:Print(L_WELCOMEBACK, UnitName("player") .. "!");
     end
@@ -327,8 +327,6 @@ function core:DebugPrintTable(node)
 
     core:Debug(output_str);
 end
-
-function core:GetAppName() return AppName; end
 
 local events = CreateFrame("Frame");
 events:RegisterEvent("ADDON_LOADED");

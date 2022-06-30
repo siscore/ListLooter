@@ -1,3 +1,9 @@
+--------------------------------------
+-- Namespaces
+--------------------------------------
+local _, core = ...;
+core.Localization = {}; -- adds Config table to addon namespace
+
 L_WELCOMEBACK = "Weclome back";
 
 -- Options

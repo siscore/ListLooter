@@ -5,7 +5,6 @@ local _, core = ...;
 core.Frame = {}; -- adds Frame table to addon namespace
 
 local Masque = LibStub and LibStub("Masque", true)
-
 --------------------------------------
 -- Defaults (usually a database!)
 --------------------------------------
@@ -106,7 +105,7 @@ function Frame:Init()
 
     UIFrame.Items = {};
 
-    if (Masque) then UIFrame.masqueGroup = Masque:Group(core.GetAppName()); end
+    if (Masque) then UIFrame.masqueGroup = Masque:Group(core.Config.GetAppName()); end
 
     core.FontProvider.Init();
 end
@@ -192,8 +191,8 @@ function Frame:AddItem(...)
 
         itemFrame:SetSize(iconSize, iconSize);
         itemFrame.name:SetText(item.lootName)
-        itemFrame.name:SetFont(fontItem, fontSizeItem)
         itemFrame.name:SetTextColor(r, g, b)
+        itemFrame.name:SetFont(fontItem, fontSizeItem)
         itemFrame.icon:SetTexture(item.lootIcon);
 
         maxLootQuality = math.max(maxLootQuality, item.lootQuality)

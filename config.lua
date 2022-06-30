@@ -6,6 +6,7 @@ core.Config = {}; -- adds Config table to addon namespace
 
 local Config = core.Config;
 local UIConfig;
+
 --------------------------------------
 -- Defaults (usually a database!)
 --------------------------------------
@@ -41,6 +42,9 @@ local actions = {
 
 local itemsDB = {};
 local previouslyItemListRow = nil;
+
+local appName = "ListLooter";
+
 --------------------------------------
 -- Config functions
 --------------------------------------
@@ -63,7 +67,7 @@ function Config:LSMDetected()
     local font_opts = {
         ["name"] = "custom_font_name",
         ["parent"] = menu,
-        ["title"] = L_OPTIONS_CUSTOMFONTNAME,
+        ["title"] = core.Localization.L_OPTIONS_CUSTOMFONTNAME,
         ["items"] = fontsList,
         ["defaultVal"] = ListLooterDB.settings.customFontName or "Default",
         ["changeFunc"] = function(dropdown_frame, dropdown_val)
@@ -228,7 +232,7 @@ function Config:CreateContent(content)
     for i = 1, table.getn(itemsDB) do
         if (content.rows[i] == nil) then
             -- Create new
-            local r = self:CreateTableRow(content, rowHeight, i);
+            local r = Config:CreateTableRow(content, rowHeight, i);
             if #content.rows == 0 then
                 r:SetPoint("TOP", 0, -5);
             else
@@ -253,8 +257,8 @@ function Config:AddItem(inputItem)
 
         if Id then
             table.insert(ListLooterDB.LootDB, Id);
-            self:GetListFromGlobal();
-            self:CreateContent(UIConfig.list.listFrame.ScrollFrame.content);
+            Config:GetListFromGlobal();
+            Config:CreateContent(UIConfig.list.listFrame.ScrollFrame.content);
         end
     else
         actions.add = true;
@@ -262,15 +266,15 @@ function Config:AddItem(inputItem)
 end
 
 local function ScrollFrame_OnMouseWheel(self, delta)
-    local newValue = self:GetVerticalScroll() - (delta * 20);
+    local newValue = Config:GetVerticalScroll() - (delta * 20);
 
     if (newValue < 0) then
         newValue = 0;
-    elseif (newValue > self:GetVerticalScrollRange()) then
-        newValue = self:GetVerticalScrollRange();
+    elseif (newValue > Config:GetVerticalScrollRange()) then
+        newValue = Config:GetVerticalScrollRange();
     end
 
-    self:SetVerticalScroll(newValue);
+    Config:SetVerticalScroll(newValue);
 end
 
 function Config:GetListFromGlobal()
@@ -341,6 +345,10 @@ function Config:UpdateSettings3()
     end
 end
 
+function Config:GetAppName()
+    return appName;
+end
+
 function Config:CreateMenu()
     -- ListLooterDB = nil;
 
@@ -364,7 +372,7 @@ function Config:CreateMenu()
 
     if (ListLooterDB.frame == nil) then ListLooterDB.frame = defaults.frame; end
 
-    self:GetListFromGlobal();
+    Config:GetListFromGlobal();
     ----------------------------------
     -- MAIN SETTINGS
     ----------------------------------
@@ -377,7 +385,8 @@ function Config:CreateMenu()
     UIConfig.title:SetPoint("TOPLEFT", UIConfig, "TOPLEFT", 40, -20);
     UIConfig.title:SetText("|cff00ccffList Looter|r");
 
-    UIConfig.poiner1 = self:CreatePointer(UIConfig, -50, L_OPTIONS_MAINSETTINGS);
+    UIConfig.poiner1 = Config:CreatePointer(UIConfig, -50,
+                                            L_OPTIONS_MAINSETTINGS);
     UIConfig.poiner1:SetWidth(550);
 
     ----------------------------------
@@ -390,8 +399,9 @@ function Config:CreateMenu()
     UIConfig.cbEnable:SetPoint("TOPLEFT", UIConfig, "TOPLEFT", 40, -70);
     UIConfig.cbEnable.text:SetText(L_OPTIONS_ENABLE);
     UIConfig.cbEnable:SetChecked(ListLooterDB.settings.isLootEnable);
-    UIConfig.cbEnable:SetScript("OnClick", function(self, button, down)
-        ListLooterDB.settings.isLootEnable = self:GetChecked() and true or false;
+    UIConfig.cbEnable:SetScript("OnClick", function(self)
+        ListLooterDB.settings.isLootEnable =
+            Config:GetChecked() and true or false;
     end);
 
     -- Check Button 2:
@@ -402,7 +412,7 @@ function Config:CreateMenu()
                                  -5);
     UIConfig.cbCurrency.text:SetText(L_OPTIONS_CURRENCY);
     UIConfig.cbCurrency:SetChecked(ListLooterDB.settings.isCurrency);
-    UIConfig.cbCurrency:SetScript("OnClick", function(self, button, down)
+    UIConfig.cbCurrency:SetScript("OnClick", function(self)
         ListLooterDB.settings.isCurrency = self:GetChecked() and true or false;
     end);
 
@@ -455,14 +465,14 @@ function Config:CreateMenu()
             core.Frame:UpdateSettings();
         end
     }
-    UIConfig.ddCustomFont = self:CreateDropdown(font_opts);
+    UIConfig.ddCustomFont = Config:CreateDropdown(font_opts);
     UIConfig.ddCustomFont:SetPoint("TOPLEFT", UIConfig.cbAfterClose,
                                    "BOTTOMLEFT", -12, -15);
     ----------------------------------
     -- FRAME SETTINGS
     ----------------------------------
-    UIConfig.poiner2 = self:CreatePointer(UIConfig, -320,
-                                          L_OPTIONS_FRAMESETTINGS);
+    UIConfig.poiner2 = Config:CreatePointer(UIConfig, -320,
+                                            L_OPTIONS_FRAMESETTINGS);
     UIConfig.poiner2:SetWidth(550);
 
     -- Check Button 5:
@@ -480,10 +490,10 @@ function Config:CreateMenu()
     end);
 
     -- Slider 1:
-    UIConfig.slider1 = self:CreateSlider(UIConfig, L_OPTIONS_FRAMEICOSIZE, 10,
-                                         50, ListLooterDB.frame.iconSize,
-                                         "TOPLEFT", UIConfig.cbLootFrame,
-                                         "BOTTOMLEFT", 0, -20);
+    UIConfig.slider1 = Config:CreateSlider(UIConfig, L_OPTIONS_FRAMEICOSIZE, 10,
+                                           50, ListLooterDB.frame.iconSize,
+                                           "TOPLEFT", UIConfig.cbLootFrame,
+                                           "BOTTOMLEFT", 0, -20);
     UIConfig.slider1:SetScript('OnValueChanged', function(self, value)
         value = math.floor(value + .5)
 
@@ -494,10 +504,11 @@ function Config:CreateMenu()
     end)
 
     -- Slider 2:
-    UIConfig.slider2 = self:CreateSlider(UIConfig, L_OPTIONS_FRAMEFONTITEMSIZE,
-                                         8, 20, ListLooterDB.frame.fontSizeItem,
-                                         "TOPLEFT", UIConfig.cbLootFrame,
-                                         "BOTTOMLEFT", 300, -20);
+    UIConfig.slider2 = Config:CreateSlider(UIConfig,
+                                           L_OPTIONS_FRAMEFONTITEMSIZE, 8, 20,
+                                           ListLooterDB.frame.fontSizeItem,
+                                           "TOPLEFT", UIConfig.cbLootFrame,
+                                           "BOTTOMLEFT", 300, -20);
     UIConfig.slider2:SetScript('OnValueChanged', function(self, value)
         value = math.floor(value + .5)
 
@@ -508,11 +519,11 @@ function Config:CreateMenu()
     end)
 
     -- Slider 3:
-    UIConfig.slider3 = self:CreateSlider(UIConfig, L_OPTIONS_FRAMEFONTCOUNTSIZE,
-                                         8, 20,
-                                         ListLooterDB.frame.fontSizeCount,
-                                         "TOPLEFT", UIConfig.slider1,
-                                         "BOTTOMLEFT", 0, -40);
+    UIConfig.slider3 = Config:CreateSlider(UIConfig,
+                                           L_OPTIONS_FRAMEFONTCOUNTSIZE, 8, 20,
+                                           ListLooterDB.frame.fontSizeCount,
+                                           "TOPLEFT", UIConfig.slider1,
+                                           "BOTTOMLEFT", 0, -40);
     UIConfig.slider3:SetScript('OnValueChanged', function(self, value)
         value = math.floor(value + .5)
 
@@ -554,7 +565,7 @@ function Config:CreateMenu()
     UIConfig.list.description:SetText(L_OPTIONS_LISTADDTEXT);
 
     -- Edit text:
-    UIConfig.list.ebItemId = self:CreateEditBox(UIConfig.list, -75, false);
+    UIConfig.list.ebItemId = Config:CreateEditBox(UIConfig.list, -75, false);
     UIConfig.list.ebItemId:SetScript("OnEnterPressed", function(self)
         local newId = self:GetText();
         self:SetText('');
@@ -697,16 +708,17 @@ function Config:CreateSlider(parent, name, min, max, cur, ...)
     slider:SetMinMaxValues(min, max)
     slider:SetValue(cur)
 
-    slider.label = self:CreateFontString(parent, name,
-                                         'GameFontHighlightCenter', 'BOTTOM',
-                                         slider, 'TOP')
-    slider.min = self:CreateFontString(parent, min, 'GameFontHighlightSmall',
-                                       'TOPLEFT', slider, 'BOTTOMLEFT', 2, 2)
-    slider.max = self:CreateFontString(parent, max, 'GameFontHighlightSmall',
-                                       'TOPRIGHT', slider, 'BOTTOMRIGHT', -2, 2)
-    slider.current = self:CreateFontString(parent, cur,
-                                           'GameFontHighlightSmall', 'TOP',
-                                           slider, 'BOTTOM')
+    slider.label = Config:CreateFontString(parent, name,
+                                           'GameFontHighlightCenter', 'BOTTOM',
+                                           slider, 'TOP')
+    slider.min = Config:CreateFontString(parent, min, 'GameFontHighlightSmall',
+                                         'TOPLEFT', slider, 'BOTTOMLEFT', 2, 2)
+    slider.max = Config:CreateFontString(parent, max, 'GameFontHighlightSmall',
+                                         'TOPRIGHT', slider, 'BOTTOMRIGHT', -2,
+                                         2)
+    slider.current = Config:CreateFontString(parent, cur,
+                                             'GameFontHighlightSmall', 'TOP',
+                                             slider, 'BOTTOM')
 
     return slider
 end
