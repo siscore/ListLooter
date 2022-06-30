@@ -5,7 +5,8 @@ on:
     branches: 
       - master
     tags:
-      "*-release"
+      - "*"
+      - "!**-release**"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,7 +18,7 @@ jobs:
         uses: nebularg/actions-luacheck@v1
         with:
           args: "--no-color -q"
-          annotate: warning
+          annotate: error
       
       # Runs a single command using the runners shell
       - name: Run a one-line script
