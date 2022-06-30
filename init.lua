@@ -61,6 +61,7 @@ end
 
 -- WARNING: self automatically becomes events frame!
 function core:init(event, name)
+	core.Config:Init();
 	local appName = core.Config:GetAppName();
     if (event == "ADDON_LOADED") then core.FontProvider.Init(); end
 

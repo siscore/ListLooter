@@ -55,6 +55,10 @@ function Config:OnEvent(event, name)
     end
 end
 
+function Config:Init()
+	ListLooterDB = ListLooterDB or {};
+end
+
 function Config:Toggle()
     local menu = UIConfig or Config:CreateMenu();
     menu:SetShown(not menu:IsShown());
@@ -70,7 +74,7 @@ function Config:LSMDetected()
         ["title"] = core.Localization.L_OPTIONS_CUSTOMFONTNAME,
         ["items"] = fontsList,
         ["defaultVal"] = ListLooterDB.settings.customFontName or "Default",
-        ["changeFunc"] = function(dropdown_frame, dropdown_val)
+        ["changeFunc"] = function(_, dropdown_val)
             ListLooterDB.settings.customFontName = dropdown_val;
             core.Frame:UpdateSettings();
         end
