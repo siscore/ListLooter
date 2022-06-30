@@ -1,0 +1,6 @@
+package-as: ListLooter
+
+externals:
+  libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
+
+enable-nolib-creation: no
