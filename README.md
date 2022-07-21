@@ -31,3 +31,5 @@ ListLooter - это простой аддон, который позволяет
 Поддерживает:
 - Masque
 - LibSharedMedia-3.0
+
+[![CI](https://github.com/siscore/ListLooter/actions/workflows/build.yml/badge.svg)](https://github.com/siscore/ListLooter/actions/workflows/build.yml)
