@@ -358,7 +358,10 @@ function Config:CreateMenu()
 
     if ListLooterDB == nil then
         ListLooterDB = {};
-        ListLooterDB.settings = {
+    end
+
+	if ListLooterDB.settings == nil then 
+		ListLooterDB.settings = {
             isLootEnable = defaults.settings.isLootEnable,
             isCurrency = defaults.settings.isCurrency,
             isQuestItem = defaults.settings.isQuestItem,
@@ -367,8 +370,11 @@ function Config:CreateMenu()
             isLootFrame = defaults.settings.isLootFrame,
             isFishingLoot = defaults.settings.isFishingLoot
         };
-        ListLooterDB.LootDB = {};
-    end
+	end
+	
+	if ListLooterDB.Loot == nil then 
+		ListLooterDB.LootDB = {};
+	end
 
     Config:UpdateSettings1();
     Config:UpdateSettings2();
