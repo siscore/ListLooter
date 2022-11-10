@@ -8,9 +8,3 @@ enable-nolib-creation: no
 ignore:    
   - .github
   - .pkgmeta
-  - .pkgmeta-bcc
-  - .pkgmeta-wolk
-  - .pkgmeta-classic
-  - ListLooter-Vanilla.toc
-  - ListLooter-TBC.toc
-  - ListLooter-Wrath.toc
