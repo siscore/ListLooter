@@ -4,3 +4,13 @@ externals:
   libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
 
 enable-nolib-creation: no
+
+ignore:    
+  - .github
+  - .pkgmeta
+  - .pkgmeta-bcc
+  - .pkgmeta-wolk
+  - .pkgmeta-classic
+  - ListLooter-Wrath.toc
+  - ListLooter-Mainline.toc
+  - ListLooter-Wrath.toc

@@ -1,0 +1,23 @@
+## Interface: 100000
+## Title: |cff00ccffList Looter|r
+## Notes: This is a simple addon which replace default loot frame. Including creating a list of items to automatically collect.
+## Notes-ruRU: Замещает стандартное окно сбора добычи. Позволяет создавать списки для автоматического сбора.
+## Author: SisCore
+## Version: 2.9.0
+## DefaultState: enabled
+## OptionalDeps: Masque, LibSharedMedia-3.0, LibSharedMedia-2.0, SharedMediaLib
+## SavedVariables: ListLooterDB
+## X-Curse-Project-ID: 286508
+## X-Wago-ID: Rn6Vd8Gd
+## X-WoWI-ID: 25975
+
+##libs
+libs\LibStub\LibStub.lua
+
+##addon
+localization.lua
+override.lua
+fontProvider.lua
+config.lua
+frame.lua
+init.lua

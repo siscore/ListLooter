@@ -12,5 +12,5 @@ ignore:
   - .pkgmeta-wolk
   - .pkgmeta-classic
   - ListLooter-Vanilla.toc
+  - ListLooter-Mainline.toc
   - ListLooter-TBC.toc
-  - ListLooter-Wrath.toc
