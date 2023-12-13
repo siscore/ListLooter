@@ -61,19 +61,17 @@ function Frame:Init()
     UIFrame = core.Override.CreateFrameA(nil, "Button", "ListLooterLootFrame", UIParent)
     UIFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 2 * defaults.delta, -2 * defaults.delta)
     UIFrame:SetSize(1, 1)
-    UIFrame:SetShown(false)
+    --UIFrame:SetShown(false)
 
     UIFrame:SetMovable(true)
     UIFrame:RegisterForClicks "anyup"
 
-    core.Override.ApplyBackdropA(
-        nil,
-        UIFrame,
+    UIFrame:SetBackdrop(
         {
-            bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+            bgFile = "Interface\\Tooltips\\UI-Tooltip-Background.blp",
             tile = true,
             tileSize = 16,
-            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border.blp",
             edgeSize = 16,
             insets = {
                 left = 4,
@@ -145,13 +143,12 @@ function Frame:AddItem(...)
     item.lootIcon = lootInfo[2]
     item.lootName = lootInfo[3]
     item.lootQuantity = lootInfo[4]
-    item.currencyID = lootInfo[5]
-    item.lootQuality = lootInfo[6]
-    item.locked = lootInfo[7]
-    item.isQuestItem = lootInfo[8]
-    item.questID = lootInfo[9]
-    item.isActive = lootInfo[10]
-
+    item.lootQuality = lootInfo[5]
+    item.locked = lootInfo[6]
+    item.isQuestItem = lootInfo[7]
+    item.questID = lootInfo[8]
+    item.isActive = lootInfo[9]
+      
     local itemFrame = UIFrame.Items[item.index]
 
     if (not itemFrame) then
@@ -161,23 +158,23 @@ function Frame:AddItem(...)
 
     itemFrame.index = item.index
 
-    if (item.currencyID) then
-        item.lootName, item.lootIcon, item.lootQuantity, item.lootQuality =
-            CurrencyContainerUtil.GetCurrencyContainerInfo(
-            item.currencyID,
-            item.lootQuantity,
-            item.lootName,
-            item.lootIcon,
-            item.lootQuality
-        )
-    end
-
+    -- if (item.currencyID) then
+    --     DEFAULT_CHAT_FRAME:AddMessage(item.currencyID);
+    --     item.lootName, item.lootIcon, item.lootQuantity, item.lootQuality =
+    --         CurrencyContainerUtil.GetCurrencyContainerInfo(
+    --         item.currencyID,
+    --         item.lootQuantity,
+    --         item.lootName,
+    --         item.lootIcon,
+    --         item.lootQuality
+    --     )
+    -- end
+    
     if (item.lootIcon) then
         local color = ITEM_QUALITY_COLORS[item.lootQuality]
         local r, g, b = color.r, color.g, color.b
 
-        local slotType = GetLootSlotType(item.index)
-        if (slotType == LOOT_SLOT_MONEY) then
+        if (LootSlotIsCoin(item.index)) then
             item.lootName = item.lootName:gsub("\n", ", ")
         end
 

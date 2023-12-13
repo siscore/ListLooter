@@ -34,7 +34,7 @@ function Override:ApplyBackdropA(frame, backdrop)
 end
 
 function Override:CheckVerion()
-    return true
+    return Override:IfNewVersion();
 end
 
 function Override:IfNewVersion()

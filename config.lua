@@ -60,8 +60,7 @@ function Config:Init()
 end
 
 function Config:Toggle()
-    local menu = UIConfig or Config:CreateMenu()
-    menu:SetShown(not menu:IsShown())
+    local menu = UIConfig or Config:CreateMenu();
 end
 
 function Config:LSMDetected()
@@ -378,6 +377,7 @@ function Config:GetAppName()
 end
 
 function Config:CreateMenu()
+
     -- ListLooterDB = nil;
 
     if ListLooterDB == nil then
@@ -418,17 +418,20 @@ function Config:CreateMenu()
     UIConfig.title = UIConfig:CreateFontString(nil, "BACKGROUND", "GameFontNormalLarge")
     UIConfig.title:SetPoint("TOPLEFT", UIConfig, "TOPLEFT", 40, -20)
     UIConfig.title:SetText("|cff00ccffList Looter|r")
-
+    
     UIConfig.poiner1 = Config:CreatePointer(UIConfig, -50, L_OPTIONS_MAINSETTINGS)
-    UIConfig.poiner1:SetWidth(550)
+    UIConfig.poiner1:SetWidth(350)
 
     ----------------------------------
     -- Check Buttons
     ----------------------------------
     -- Check Button 1:
     UIConfig.cbEnable = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate")
-    UIConfig.cbEnable:SetPoint("TOPLEFT", UIConfig, "TOPLEFT", 40, -70)
-    UIConfig.cbEnable.text:SetText(L_OPTIONS_ENABLE)
+    UIConfig.cbEnable:SetPoint("TOPLEFT", UIConfig, "TOPLEFT", 40, -90)
+    UIConfig.cbEnable:SetScale(.75);
+    UIConfig.cbEnable.text = UIConfig.cbEnable:CreateFontString(nil, "OVERLAY", "ChatFontNormal");
+    UIConfig.cbEnable.text:SetPoint("LEFT", UIConfig.cbEnable, "RIGHT", 0, 0);
+    UIConfig.cbEnable.text:SetText(L_OPTIONS_ENABLE);
     UIConfig.cbEnable:SetChecked(ListLooterDB.settings.isLootEnable)
     UIConfig.cbEnable:SetScript(
         "OnClick",
@@ -440,7 +443,10 @@ function Config:CreateMenu()
     -- Check Button 2:
     UIConfig.cbCurrency = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate")
     UIConfig.cbCurrency:SetPoint("TOPLEFT", UIConfig.cbEnable, "BOTTOMLEFT", 0, -5)
-    UIConfig.cbCurrency.text:SetText(L_OPTIONS_CURRENCY)
+    UIConfig.cbCurrency:SetScale(.75);
+    UIConfig.cbCurrency.text = UIConfig.cbCurrency:CreateFontString(nil, "OVERLAY", "ChatFontNormal");
+    UIConfig.cbCurrency.text:SetPoint("LEFT", UIConfig.cbCurrency, "RIGHT", 0, 0);
+    UIConfig.cbCurrency.text:SetText(L_OPTIONS_CURRENCY);
     UIConfig.cbCurrency:SetChecked(ListLooterDB.settings.isCurrency)
     UIConfig.cbCurrency:SetScript(
         "OnClick",
@@ -448,11 +454,14 @@ function Config:CreateMenu()
             ListLooterDB.settings.isCurrency = self:GetChecked() and true or false
         end
     )
-
+    
     -- Check Button 3:
     UIConfig.cbQuestItems = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate")
     UIConfig.cbQuestItems:SetPoint("TOPLEFT", UIConfig.cbCurrency, "BOTTOMLEFT", 0, -5)
-    UIConfig.cbQuestItems.text:SetText(L_OPTIONS_QUESTITEMS)
+    UIConfig.cbQuestItems:SetScale(.75);
+    UIConfig.cbQuestItems.text = UIConfig.cbQuestItems:CreateFontString(nil, "OVERLAY", "ChatFontNormal");
+    UIConfig.cbQuestItems.text:SetPoint("LEFT", UIConfig.cbQuestItems, "RIGHT", 0, 0);
+    UIConfig.cbQuestItems.text:SetText(L_OPTIONS_QUESTITEMS);
     UIConfig.cbQuestItems:SetChecked(ListLooterDB.settings.isQuestItem)
     UIConfig.cbQuestItems:SetScript(
         "OnClick",
@@ -464,7 +473,10 @@ function Config:CreateMenu()
     -- Check Button 5:
     UIConfig.cbFishingLoot = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate")
     UIConfig.cbFishingLoot:SetPoint("TOPLEFT", UIConfig.cbQuestItems, "BOTTOMLEFT", 0, -5)
-    UIConfig.cbFishingLoot.text:SetText(L_OPTIONS_FISHLOOT)
+    UIConfig.cbFishingLoot:SetScale(.75);
+    UIConfig.cbFishingLoot.text = UIConfig.cbFishingLoot:CreateFontString(nil, "OVERLAY", "ChatFontNormal");
+    UIConfig.cbFishingLoot.text:SetPoint("LEFT", UIConfig.cbFishingLoot, "RIGHT", 0, 0);
+    UIConfig.cbFishingLoot.text:SetText(L_OPTIONS_FISHLOOT);
     UIConfig.cbFishingLoot:SetChecked(ListLooterDB.settings.isFishingLoot)
     UIConfig.cbFishingLoot:SetScript(
         "OnClick",
@@ -474,8 +486,11 @@ function Config:CreateMenu()
     )
     -- Check Button 4:
     UIConfig.cbAfterClose = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate")
-    UIConfig.cbAfterClose:SetPoint("TOPLEFT", UIConfig.cbFishingLoot, "BOTTOMLEFT", 0, -5)
-    UIConfig.cbAfterClose.text:SetText(L_OPTIONS_AFTERCLOSE)
+    UIConfig.cbAfterClose:SetPoint("TOPLEFT", UIConfig.cbFishingLoot, "BOTTOMLEFT", 0, -5)    
+    UIConfig.cbAfterClose:SetScale(.75);
+    UIConfig.cbAfterClose.text = UIConfig.cbAfterClose:CreateFontString(nil, "OVERLAY", "ChatFontNormal");
+    UIConfig.cbAfterClose.text:SetPoint("LEFT", UIConfig.cbAfterClose, "RIGHT", 0, 0);
+    UIConfig.cbAfterClose.text:SetText(L_OPTIONS_AFTERCLOSE);
     UIConfig.cbAfterClose:SetChecked(ListLooterDB.settings.isAfterClose)
     UIConfig.cbAfterClose:SetScript(
         "OnClick",
@@ -483,7 +498,7 @@ function Config:CreateMenu()
             ListLooterDB.settings.isAfterClose = self:GetChecked() and true or false
         end
     )
-
+    
     -- Drop Down Button 1:
     local fontsList = core.FontProvider:GetFontsName()
     local font_opts = {
@@ -498,18 +513,21 @@ function Config:CreateMenu()
         end
     }
     UIConfig.ddCustomFont = Config:CreateDropdown(font_opts);
-    --UIConfig.ddCustomFont:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", -12, -15);
-
+    UIConfig.ddCustomFont:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", -12, -15);
+    
     ----------------------------------
     -- FRAME SETTINGS
     ----------------------------------
-    UIConfig.poiner2 = Config:CreatePointer(UIConfig, -320, L_OPTIONS_FRAMESETTINGS)
-    UIConfig.poiner2:SetWidth(550)
+    UIConfig.poiner2 = Config:CreatePointer(UIConfig, -275, L_OPTIONS_FRAMESETTINGS)
+    UIConfig.poiner2:SetWidth(350)
 
     -- Check Button 5:
     UIConfig.cbLootFrame = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate")
     UIConfig.cbLootFrame:SetPoint("TOPLEFT", UIConfig.poiner2, "BOTTOMLEFT", 0, -5)
-    UIConfig.cbLootFrame.text:SetText(L_OPTIONS_FRAMEENABLE)
+    UIConfig.cbLootFrame:SetScale(.75);
+    UIConfig.cbLootFrame.text = UIConfig.cbLootFrame:CreateFontString(nil, "OVERLAY", "ChatFontNormal");
+    UIConfig.cbLootFrame.text:SetPoint("LEFT", UIConfig.cbLootFrame, "RIGHT", 0, 0);
+    UIConfig.cbLootFrame.text:SetText(L_OPTIONS_FRAMEENABLE);
     UIConfig.cbLootFrame:SetChecked(ListLooterDB.settings.isLootFrame)
     UIConfig.cbLootFrame:SetScript(
         "OnClick",
@@ -518,7 +536,7 @@ function Config:CreateMenu()
             core.Frame.HideBlizzardLootFrame("isHide", ListLooterDB.settings.isLootFrame)
         end
     )
-
+    
     -- Slider 1:
     UIConfig.slider1 =
         Config:CreateSlider(
@@ -544,7 +562,7 @@ function Config:CreateMenu()
             core.Frame.UpdateSettings()
         end
     )
-
+    
     -- Slider 2:
     UIConfig.slider2 =
         Config:CreateSlider(
@@ -596,7 +614,7 @@ function Config:CreateMenu()
             core.Frame.UpdateSettings()
         end
     )
-
+        
     InterfaceOptions_AddCategory(UIConfig)
 
     ----------------------------------
@@ -645,7 +663,7 @@ function Config:CreateMenu()
     UIConfig.list.listFrame:SetAllPoints(UIConfig.list)
     UIConfig.list.listFrame:SetPoint("TOPLEFT", 35, -100)
     UIConfig.list.listFrame:SetPoint("BOTTOMRIGHT", -30, 30)
-
+    
     core.Override.ApplyBackdropA(
         nil,
         UIConfig.list.listFrame,
@@ -661,40 +679,20 @@ function Config:CreateMenu()
 
     -- scrollframe
     UIConfig.list.listFrame.ScrollFrame =
-        core.Override.CreateFrameA(nil, "ScrollFrame", nil, UIConfig.list.listFrame, "UIPanelScrollFrameTemplate")
+        core.Override.CreateFrameA(nil, "ScrollFrame", "UIConfigListListFrameScrollFrame", UIConfig.list.listFrame, "FauxScrollFrameTemplate")
     UIConfig.list.listFrame.ScrollFrame:SetPoint("TOPLEFT", UIConfig.list.listFrame, "TOPLEFT", 4, -8)
     UIConfig.list.listFrame.ScrollFrame:SetPoint("BOTTOMRIGHT", UIConfig.list.listFrame, "BOTTOMRIGHT", -3, 4)
-    UIConfig.list.listFrame.ScrollFrame:SetClipsChildren(true)
+    --UIConfig.list.listFrame.ScrollFrame:SetClipsChildren(true)
     UIConfig.list.listFrame.ScrollFrame:SetScript("OnMouseWheel", ScrollFrame_OnMouseWheel)
-
-    UIConfig.list.listFrame.ScrollFrame.ScrollBar:ClearAllPoints()
-    UIConfig.list.listFrame.ScrollFrame.ScrollBar:SetPoint(
-        "TOPLEFT",
-        UIConfig.list.listFrame.ScrollFrame,
-        "TOPRIGHT",
-        -12,
-        -18
-    )
-    UIConfig.list.listFrame.ScrollFrame.ScrollBar:SetPoint(
-        "BOTTOMRIGHT",
-        UIConfig.list.listFrame.ScrollFrame,
-        "BOTTOMRIGHT",
-        -7,
-        18
-    )
 
     -- content frame
     UIConfig.list.listFrame.ScrollFrame.content = core.Override.CreateFrameA(nil, "Frame", nil, UIConfig.list.listFrame.ScrollFrame)
-    if (core.Override:IfNewVersion()) then
-        UIConfig.list.listFrame.ScrollFrame.content:SetSize(585, 200)
-    else
-        UIConfig.list.listFrame.ScrollFrame.content:SetSize(InterfaceOptionsFramePanelContainer:GetWidth() - 75, 200)
-    end
+    UIConfig.list.listFrame.ScrollFrame.content:SetSize(585, 200)
     UIConfig.list.listFrame.ScrollFrame:SetScrollChild(UIConfig.list.listFrame.ScrollFrame.content)
     UIConfig.list.listFrame.ScrollFrame.content.rows = {}
 
     Config:CreateContent(UIConfig.list.listFrame.ScrollFrame.content)
-
+      
     InterfaceOptions_AddCategory(UIConfig.list)
 
     return UIConfig
@@ -710,20 +708,11 @@ function Config:CreateDropdown(opts)
         end
 
     local dropdown = CreateFrame("Frame", dropdown_name, opts["parent"], "UIDropDownMenuTemplate")
-    local dd_title = dropdown:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    dd_title:SetPoint("TOPLEFT", 20, 10)
 
-    for key, item in pairs(menu_items) do
-        dd_title:SetText(key)
-        local text_width = dd_title:GetStringWidth() + 20
-        if text_width > dropdown_width then
-            dropdown_width = text_width + 100
-        end
-    end
-
-    UIDropDownMenu_SetWidth(dropdown, dropdown_width)
+    --UIDropDownMenu_SetWidth(dropdown, dropdown_width)
     UIDropDownMenu_SetText(dropdown, default_val)
-    dd_title:SetText(title_text)
+    UIDropDownMenu_SetSelectedValue(dropdown, default_val)
+
 
     UIDropDownMenu_Initialize(
         dropdown,
@@ -735,8 +724,8 @@ function Config:CreateDropdown(opts)
                 info.menuList = key
                 info.hasArrow = false
                 info.func = function(b)
-                    UIDropDownMenu_SetSelectedValue(dropdown, b.value, b.value)
-                    UIDropDownMenu_SetText(dropdown, b.value)
+                    UIDropDownMenu_SetSelectedValue(dropdown, b.value)
+                    --UIDropDownMenu_SetText(dropdown, b.value)
                     b.checked = true
                     change_func(dropdown, b.value)
                 end
@@ -768,7 +757,7 @@ function Config:CreateSlider(parent, name, min, max, cur, ...)
     slider:SetPoint(...)
     slider:SetSize(250, 17)
     slider:SetHitRectInsets(0, 0, -10, -10)
-    core.Override.ApplyBackdropA(nil, slider, sliderBackdrop)
+    slider:SetBackdrop(sliderBackdrop)
 
     slider:SetThumbTexture [[Interface\Buttons\UI-SliderBar-Button-Horizontal]]
     slider:SetMinMaxValues(min, max)

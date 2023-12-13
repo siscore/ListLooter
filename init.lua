@@ -73,7 +73,7 @@ function core:init(event, name)
     end
 
     if (name == appName and event == "ADDON_LOADED") then
-        -- allows using left and right buttons to move through chat 'edit' box
+    	   -- allows using left and right buttons to move through chat 'edit' box
         for i = 1, NUM_CHAT_WINDOWS do
             _G["ChatFrame" .. i .. "EditBox"]:SetAltArrowKeyMode(false)
         end
@@ -133,9 +133,7 @@ function core:ShowTestFrame()
 
     if (config.isLootFrame) then
         core.Frame.CloseLootFrame()
-        AddTestItem(182614, 1)
-        AddTestItem(179350, 2)
-        AddTestItem(84101, 3)
+        AddTestItem(4361, 10)
         core.Frame.ShowLootList()
     end
 end
@@ -145,7 +143,7 @@ function AddTestItem(id, index)
     if (itemName == nil) then
         core:Debug("Item cache not ready...")
     else
-        core.Frame.AddItem("table", index, itemTexture, itemName, 1, nil, itemRarity, false, false, false, true)
+        core.Frame.AddItem("table", index, itemTexture, itemName, 1, itemRarity, false, false, false, true)
     end
 end
 
@@ -165,35 +163,19 @@ function core:Loot()
         local item = core.Frame.GetEmptyItem()
         item.index = i
         item.lootIcon,
-            item.lootName,
-            item.lootQuantity,
-            item.currencyID,
-            item.lootQuality,
-            item.locked,
-            item.isQuestItem,
-            item.questID,
-            item.isActive = GetLootSlotInfo(i)
+        item.lootName,
+        item.lootQuantity,
+        item.lootQuality,
+        item.locked,
+        item.isQuestItem,
+        item.questID,
+        item.isActive = GetLootSlotInfo(i)
 
         local ifLooted = false
 
         if config.isLootEnable == true then
             if (config.isCurrency == true and not ifLooted) then
-                local lootSlotType = GetLootSlotType(i)
-                if item.currencyID ~= nil and lootSlotType ~= LOOT_SLOT_MONEY then
-                    local info = C_CurrencyInfo.GetCurrencyInfo(item.currencyID)
-
-                    if
-                        (info.maxQuantity == nil or info.maxQuantity == 0 or
-                            info.maxQuantity >= (info.quantity + item.lootQuantity))
-                     then
-                        core:Debug(
-                            "Core:Loot(): Loot money or currency. Slot: " ..
-                                i .. " " .. item.lootIcon .. " " .. item.lootName
-                        )
-                        LootSlot(i)
-                        ifLooted = true
-                    end
-                elseif item.currencyID == nil and lootSlotType == LOOT_SLOT_MONEY then
+                if LootSlotIsCoin(i) then
                     core:Debug(
                         "Core:Loot(): Loot money or currency. Slot: " ..
                             i .. " " .. item.lootIcon .. " " .. item.lootName
@@ -204,6 +186,8 @@ function core:Loot()
             end
 
             if (config.isQuestItem == true and not ifLooted) then
+                --DEFAULT_CHAT_FRAME:AddMessage("item.isQuestItem - " .. item.isQuestItem)
+                DEFAULT_CHAT_FRAME:AddMessage("item.questID - " .. item.questID )
                 if item.isQuestItem == true then
                     core:Debug(
                         "Core:Loot(): Loot quest item. Slot: " .. i .. " " .. item.lootIcon .. " " .. item.lootName
@@ -219,7 +203,7 @@ function core:Loot()
                     core:Debug(
                         "Core:Loot(): Loot fishing loot. Slot: " .. i .. " " .. item.lootIcon .. " " .. item.lootName
                     )
-                    LootSlot(i)
+                    LootSlot(i);
                     ifLooted = true
                 end
             end
@@ -248,13 +232,12 @@ function core:Loot()
                 item.lootIcon,
                 item.lootName,
                 item.lootQuantity,
-                item.currencyID,
                 item.lootQuality,
                 item.locked,
                 item.isQuestItem,
                 item.questID,
                 item.isActive
-            )
+            );
         end
     end
 
