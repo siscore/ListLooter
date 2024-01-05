@@ -186,9 +186,7 @@ function core:Loot()
             end
 
             if (config.isQuestItem == true and not ifLooted) then
-                --DEFAULT_CHAT_FRAME:AddMessage("item.isQuestItem - " .. item.isQuestItem)
-                DEFAULT_CHAT_FRAME:AddMessage("item.questID - " .. item.questID )
-                if item.isQuestItem == true then
+                if item.questID or item.isQuestItem then
                     core:Debug(
                         "Core:Loot(): Loot quest item. Slot: " .. i .. " " .. item.lootIcon .. " " .. item.lootName
                     )

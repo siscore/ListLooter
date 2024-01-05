@@ -237,7 +237,7 @@ function Frame:CreateItemFrame(masqueGroup)
         "OnEnter",
         function(self)
             local slot = self.index
-            if (GetLootSlotType(slot) == LOOT_SLOT_ITEM) then
+            if (LootSlotIsItem(slot)) then
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                 GameTooltip:SetLootItem(slot)
                 CursorUpdate(self)

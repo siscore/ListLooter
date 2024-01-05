@@ -18,7 +18,8 @@ function FontProvider:GetFontsList()
     local fontFolderName = "Interface\\AddOns\\" .. appName .. "\\Fonts\\"
     return {
         Default = defaultFont,
-        Enigmatic = fontFolderName .. "EnigmaU_2.ttf"
+        Enigmatic = fontFolderName .. "EnigmaU_2.ttf",
+        MagistralTT = fontFolderName .. "MagistralTT.TTF"
     }
 end
 
@@ -67,6 +68,10 @@ function FontProvider:RegisterCustomFonts()
     local customFontsList = {
         Enigmatic = {
             fontFolderName .. "EnigmaU_2.ttf",
+            LSM.LOCALE_BIT_ruRU + LSM.LOCALE_BIT_western
+        },
+        MagistralTT = {
+            fontFolderName .. "MagistralTT.ttf",
             LSM.LOCALE_BIT_ruRU + LSM.LOCALE_BIT_western
         }
     }
