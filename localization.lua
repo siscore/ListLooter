@@ -22,6 +22,7 @@ L_OPTIONS_FRAMEFONTCOUNTSIZE = "Count font size"
 L_OPTIONS_FRAMEENABLE = "Replace default loot frame"
 L_OPTIONS_USECUSTOMFONT = "Use custom font"
 L_OPTIONS_CUSTOMFONTNAME = "Custom font"
+L_ENUM_ITEM_TYPE_QUEST = "Quest"
 
 local clientLocale = GetLocale()
 
@@ -101,4 +102,5 @@ elseif clientLocale == "ruRU" then
     L_OPTIONS_FRAMEENABLE = "Заменить стандартный фрейм сбора"
     L_OPTIONS_USECUSTOMFONT = "Использовать сторонний шрифт"
     L_OPTIONS_CUSTOMFONTNAME = "Шрифт"
+    L_ENUM_ITEM_TYPE_QUEST = "Задания"
 end

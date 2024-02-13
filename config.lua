@@ -50,7 +50,7 @@ local appName = "ListLooter"
 --------------------------------------
 function Config:OnEvent(event, name)
     if (event == "GET_ITEM_INFO_RECEIVED") then
-        -- print("Call: "..name);
+        print("Call: "..name);
         Config:ItemInfoReceived(name)
     end
 end
@@ -64,22 +64,22 @@ function Config:Toggle()
 end
 
 function Config:LSMDetected()
-    local menu = UIConfig or Config:CreateMenu()
-    menu.ddCustomFont:Hide();
-    local fontsList = core.FontProvider:GetFontsName()
-    local font_opts = {
-        ["name"] = "custom_font_name",
-        ["parent"] = menu,
-        ["title"] = core.Localization.L_OPTIONS_CUSTOMFONTNAME,
-        ["items"] = fontsList,
-        ["defaultVal"] = ListLooterDB.settings.customFontName or "Default",
-        ["changeFunc"] = function(_, dropdown_val)
-            ListLooterDB.settings.customFontName = dropdown_val
-            core.Frame:UpdateSettings()
-        end
-    }
-    menu.ddCustomFont = Config:CreateDropdown(font_opts);
-    menu.ddCustomFont:SetPoint("TOPLEFT", menu.cbAfterClose, "BOTTOMLEFT", -12, -15);
+    -- local menu = UIConfig or Config:CreateMenu()
+    -- menu.ddCustomFont:Hide();
+    -- local fontsList = core.FontProvider:GetFontsName()
+    -- local font_opts = {
+    --     ["name"] = "custom_font_name",
+    --     ["parent"] = menu,
+    --     ["title"] = core.Localization.L_OPTIONS_CUSTOMFONTNAME,
+    --     ["items"] = fontsList,
+    --     ["defaultVal"] = ListLooterDB.settings.customFontName or "Default",
+    --     ["changeFunc"] = function(_, dropdown_val)
+    --         ListLooterDB.settings.customFontName = dropdown_val
+    --         core.Frame:UpdateSettings()
+    --     end
+    -- }
+    --menu.ddCustomFont = Config:CreateDropdown(font_opts);
+    --menu.ddCustomFont:SetPoint("TOPLEFT", menu.cbAfterClose, "BOTTOMLEFT", -12, -15);
 end
 
 function Config:ToggleConfig()
@@ -162,7 +162,7 @@ function Config:CreateEditBox(relativeFrame, yOffset, focus)
     return editBox
 end
 
-function Config:CreateTableRow(parent, rowHeight, N)
+function Config:CreateTableRow(parent, N)
     -- print("CreateTableRow");
 
     local fontHeight = select(2, GameFontNormalSmall:GetFont())
@@ -251,7 +251,7 @@ function Config:CreateContent(content)
     for i = 1, table.getn(itemsDB) do
         if (content.rows[i] == nil) then
             -- Create new
-            local r = Config:CreateTableRow(content, rowHeight, i)
+            local r = Config:CreateTableRow(content, i)
             if #content.rows == 0 then
                 r:SetPoint("TOP", 5, -5)
             else
@@ -499,7 +499,7 @@ function Config:CreateMenu()
         end
     )
     
-    -- Drop Down Button 1:
+    --Drop Down Button 1:
     local fontsList = core.FontProvider:GetFontsName()
     local font_opts = {
         ["name"] = "custom_font_name",
@@ -639,7 +639,7 @@ function Config:CreateMenu()
     UIConfig.list.title:SetPoint("TOPLEFT", UIConfig.list, "TOPLEFT", 40, -20)
     UIConfig.list.title:SetText(L_OPTIONS_LISTPANELNAME)
 
-    -- Desctiption:
+    -- Desciption:
     UIConfig.list.description = UIConfig.list:CreateFontString(nil, "BACKGROUND", "GameFontNormal")
     UIConfig.list.description:SetPoint("TOPLEFT", UIConfig.list, "TOPLEFT", 40, -55)
     UIConfig.list.description:SetText(L_OPTIONS_LISTADDTEXT)
@@ -682,13 +682,14 @@ function Config:CreateMenu()
         core.Override.CreateFrameA(nil, "ScrollFrame", "UIConfigListListFrameScrollFrame", UIConfig.list.listFrame, "FauxScrollFrameTemplate")
     UIConfig.list.listFrame.ScrollFrame:SetPoint("TOPLEFT", UIConfig.list.listFrame, "TOPLEFT", 4, -8)
     UIConfig.list.listFrame.ScrollFrame:SetPoint("BOTTOMRIGHT", UIConfig.list.listFrame, "BOTTOMRIGHT", -3, 4)
-    --UIConfig.list.listFrame.ScrollFrame:SetClipsChildren(true)
     UIConfig.list.listFrame.ScrollFrame:SetScript("OnMouseWheel", ScrollFrame_OnMouseWheel)
 
     -- content frame
     UIConfig.list.listFrame.ScrollFrame.content = core.Override.CreateFrameA(nil, "Frame", nil, UIConfig.list.listFrame.ScrollFrame)
-    UIConfig.list.listFrame.ScrollFrame.content:SetSize(585, 200)
+    UIConfig.list.listFrame.ScrollFrame.content:SetSize(535, 200)
     UIConfig.list.listFrame.ScrollFrame:SetScrollChild(UIConfig.list.listFrame.ScrollFrame.content)
+    UIConfig.list.listFrame.ScrollFrame.content:SetWidth(InterfaceOptionsFramePanelContainer:GetWidth()-18)
+    UIConfig.list.listFrame.ScrollFrame.content:SetHeight(1) 
     UIConfig.list.listFrame.ScrollFrame.content.rows = {}
 
     Config:CreateContent(UIConfig.list.listFrame.ScrollFrame.content)
@@ -702,32 +703,32 @@ function Config:CreateDropdown(opts)
     local dropdown_name = "$parent_" .. opts["name"] .. "_dropdown"
     local menu_items = opts["items"] or {}
     local title_text = opts["title"] or ""
-    local dropdown_width = 0
+    local dropdown_width = 200
     local default_val = opts["defaultVal"] or ""
     local change_func = opts["changeFunc"] or function(dropdown_val)
         end
 
-    local dropdown = CreateFrame("Frame", dropdown_name, opts["parent"], "UIDropDownMenuTemplate")
-
-    --UIDropDownMenu_SetWidth(dropdown, dropdown_width)
+    local dropdown = CreateFrame("FRAME", "WPDemoDropDown", opts["parent"], "UIDropDownMenuTemplate")
+    dropdown:SetPoint("CENTER")
+    UIDropDownMenu_SetWidth(dropdown, dropdown_width)
     UIDropDownMenu_SetText(dropdown, default_val)
-    UIDropDownMenu_SetSelectedValue(dropdown, default_val)
-
 
     UIDropDownMenu_Initialize(
         dropdown,
-        function(self, level, _)
+        function(self, level, menuList)
             local info = UIDropDownMenu_CreateInfo()
             for key, val in pairs(menu_items) do
                 info.text = key
                 info.checked = (ListLooterDB.settings.customFontName == key)
                 info.menuList = key
+                info.arg1 = key 
                 info.hasArrow = false
                 info.func = function(b)
-                    UIDropDownMenu_SetSelectedValue(dropdown, b.value)
-                    --UIDropDownMenu_SetText(dropdown, b.value)
+                    --UIDropDownMenu_SetSelectedValue(dropdown, b.value)
+                    UIDropDownMenu_SetText(dropdown, b.value)
                     b.checked = true
                     change_func(dropdown, b.value)
+                    CloseDropDownMenus()
                 end
                 UIDropDownMenu_AddButton(info)
             end

@@ -158,6 +158,7 @@ function core:Loot()
         core:Debug("Core:Loot(): Look like nothig to loot...")
         CloseLoot()
     end
+
     for i = 1, numLootItems, 1 do
         local itemLink = GetLootSlotLink(i)
         local item = core.Frame.GetEmptyItem()
@@ -169,7 +170,16 @@ function core:Loot()
         item.locked,
         item.isQuestItem,
         item.questID,
-        item.isActive = GetLootSlotInfo(i)
+        item.isActive = GetLootSlotInfo(i)    
+
+        if (LootSlotIsItem(i)) then
+            local itemType = select(6, GetItemInfo(itemLink))
+            --DEFAULT_CHAT_FRAME:AddMessage((itemType or "nil").." - "..L_ENUM_ITEM_TYPE_QUEST);
+            if (itemType == L_ENUM_ITEM_TYPE_QUEST) then 
+                --DEFAULT_CHAT_FRAME:AddMessage((itemType or "nil"));
+                item.isQuestItem = true;
+            end
+        end
 
         local ifLooted = false
 
@@ -342,3 +352,4 @@ events:RegisterEvent("LOOT_OPENED")
 events:RegisterEvent("LOOT_CLOSED")
 events:RegisterEvent("LOOT_SLOT_CLEARED")
 events:SetScript("OnEvent", core.init)
+
