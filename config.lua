@@ -85,7 +85,8 @@ end
 
 function Config:ToggleConfig()
     Config:Toggle()
-    InterfaceOptionsFrame_OpenToCategory([[|cff00ccffList Looter|r]])
+    --InterfaceOptionsFrame_OpenToCategory([[|cff00ccffList Looter|r]])
+    core.SettingsProvider.InterfaceOptionsFrame_OpenToCategory(nil, UIConfig.categoryId)
 end
 
 function Config:GetSettings()
@@ -167,7 +168,7 @@ function Config:CreateTableRow(parent, rowHeight, N)
     -- print("CreateTableRow");
 
     local fontHeight = select(2, GameFontNormalSmall:GetFont())
-    local rowHeight = fontHeight + 6
+    local rowHeight = fontHeight
     local row = core.Override.CreateFrameA(nil, "Button", nil, parent)
     row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
     row.id = N
@@ -597,9 +598,9 @@ function Config:CreateMenu()
         end
     )
 
-    InterfaceOptions_AddCategory(UIConfig)
+    --InterfaceOptions_AddCategory(UIConfig)
+    core.SettingsProvider.InterfaceOptions_AddCategory(nil, UIConfig, UIConfig.name)
 
-    ----------------------------------
     -- LIST SETTINGS
     ----------------------------------
     UIConfig.list =
@@ -695,7 +696,8 @@ function Config:CreateMenu()
 
     Config:CreateContent(UIConfig.list.listFrame.ScrollFrame.content)
 
-    InterfaceOptions_AddCategory(UIConfig.list)
+    --InterfaceOptions_AddCategory(UIConfig.list)
+    core.SettingsProvider.InterfaceOptions_AddCategory(nil, UIConfig.list, UIConfig.list.name, UIConfig.category)
 
     return UIConfig
 end

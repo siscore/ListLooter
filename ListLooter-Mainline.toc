@@ -1,9 +1,10 @@
-## Interface: 100000
+## Interface: 110002
 ## Title: |cff00ccffList Looter|r
+## IconTexture: Interface\AddOns\ListLooter\Arts\main_icon
 ## Notes: This is a simple addon which replace default loot frame. Including creating a list of items to automatically collect.
 ## Notes-ruRU: Замещает стандартное окно сбора добычи. Позволяет создавать списки для автоматического сбора.
 ## Author: SisCore
-## Version: 2.9.0
+## Version: 2.9.1
 ## DefaultState: enabled
 ## OptionalDeps: Masque, LibSharedMedia-3.0, LibSharedMedia-2.0, SharedMediaLib
 ## SavedVariables: ListLooterDB
@@ -18,6 +19,7 @@ libs\LibStub\LibStub.lua
 localization.lua
 override.lua
 fontProvider.lua
+settingsProvider.lua
 config.lua
 frame.lua
 init.lua

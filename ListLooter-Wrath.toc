@@ -18,6 +18,7 @@ libs\LibStub\LibStub.lua
 localization.lua
 override.lua
 fontProvider.lua
+settingsProvider.lua
 config.lua
 frame.lua
 init.lua
