@@ -7,7 +7,7 @@ core.SettingsProvider = {} -- adds SettingsProvider table to addon namespace
 local SettingsProvider = core.SettingsProvider
 
 function SettingsProvider:InterfaceOptions_AddCategory(panel, addonName, parentCategory)
-    print('InterfaceOptionsFrame_OpenToCategory')
+    -- print('InterfaceOptionsFrame_OpenToCategory')
     if (Settings ~= nil) then
         -- wow10
         local newCategory = nil;
