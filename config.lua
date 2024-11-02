@@ -21,12 +21,7 @@ local defaults = {
         isFishingLoot = false,
         customFontName = "Default"
     },
-    theme = {
-        r = 0,
-        g = 0.8, -- 204/255
-        b = 1,
-        hex = "00ccff"
-    },
+    theme = "Default",
     frame = {
         iconSize = 22,
         fontSizeItem = 12,
@@ -71,9 +66,12 @@ function Config:LSMDetected()
     local font_opts = {
         ["name"] = "custom_font_name",
         ["parent"] = menu,
-        ["title"] = core.Localization.L_OPTIONS_CUSTOMFONTNAME,
+        ["title"] = L_OPTIONS_CUSTOMFONTNAME,
         ["items"] = fontsList,
         ["defaultVal"] = ListLooterDB.settings.customFontName or "Default",
+        ["currentVal"] = function()
+            return ListLooterDB.settings.customFontName or "Default"
+        end,
         ["changeFunc"] = function(_, dropdown_val)
             ListLooterDB.settings.customFontName = dropdown_val
             core.Frame:UpdateSettings()
@@ -110,8 +108,10 @@ function Config:ItemInfoReceived(itemId)
 end
 
 function Config:GetThemeColor()
-    local c = defaults.theme
-    return c.r, c.g, c.b, c.hex
+    local themeId = defaults.theme;
+    local theme = core.ThemesProvider.getTheme(nil, themeId);
+    local c = theme.Frame.BackdropColor;
+    return c.r, c.g, c.b, theme.Hex
 end
 
 function Config:CreateButton(point, relativeFrame, relativePoint, yOffset, text)
@@ -374,6 +374,12 @@ function Config:UpdateSettings3()
     end
 end
 
+function Config:UpdateSettings4()
+    if (ListLooterDB.settings.theme == nil) then
+        ListLooterDB.settings.theme = 'Default'
+    end
+end
+
 function Config:GetAppName()
     return appName
 end
@@ -404,6 +410,7 @@ function Config:CreateMenu()
     Config:UpdateSettings1()
     Config:UpdateSettings2()
     Config:UpdateSettings3()
+    Config:UpdateSettings4()
 
     if (ListLooterDB.frame == nil) then
         ListLooterDB.frame = defaults.frame
@@ -493,18 +500,40 @@ function Config:CreateMenu()
         ["title"] = L_OPTIONS_CUSTOMFONTNAME,
         ["items"] = fontsList,
         ["defaultVal"] = ListLooterDB.settings.customFontName or "Default",
+        ["currentVal"] = function()
+            return ListLooterDB.settings.customFontName or "Default"
+        end,
         ["changeFunc"] = function(dropdown_frame, dropdown_val)
             ListLooterDB.settings.customFontName = dropdown_val
             core.Frame:UpdateSettings()
         end
     }
     UIConfig.ddCustomFont = Config:CreateDropdown(font_opts);
-    --UIConfig.ddCustomFont:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", -12, -15);
+    UIConfig.ddCustomFont:SetPoint("TOPLEFT", UIConfig.cbAfterClose, "BOTTOMLEFT", -12, -15);
+    
+    -- Drop Down Button 2:
+    local themesList = core.ThemesProvider:GetThemesList()
+    local themes_opts = {
+        ["name"] = "custom_theme_name",
+        ["parent"] = UIConfig,
+        ["title"] = L_OPTIONS_CUSTOMTHEMENAME,
+        ["items"] = themesList,
+        ["defaultVal"] = ListLooterDB.settings.theme or "Default",
+        ["currentVal"] = function()
+            return ListLooterDB.settings.theme or "Default"
+        end,
+        ["changeFunc"] = function(dropdown_frame, dropdown_val)
+            ListLooterDB.settings.theme = dropdown_val
+            core.Frame:UpdateSettings()
+        end
+    }
+    UIConfig.ddCustomTheme = Config:CreateDropdown(themes_opts);
+    UIConfig.ddCustomTheme:SetPoint("TOPLEFT", UIConfig.ddCustomFont, "BOTTOMLEFT", 0, -15);
 
     ----------------------------------
     -- FRAME SETTINGS
     ----------------------------------
-    UIConfig.poiner2 = Config:CreatePointer(UIConfig, -320, L_OPTIONS_FRAMESETTINGS)
+    UIConfig.poiner2 = Config:CreatePointer(UIConfig, -350, L_OPTIONS_FRAMESETTINGS)
     UIConfig.poiner2:SetWidth(550)
 
     -- Check Button 5:
@@ -708,7 +737,9 @@ function Config:CreateDropdown(opts)
     local title_text = opts["title"] or ""
     local dropdown_width = 0
     local default_val = opts["defaultVal"] or ""
-    local change_func = opts["changeFunc"] or function(dropdown_val)
+    local current_val = opts["currentVal"] or function()
+        end
+    local change_func = opts["changeFunc"] or function()
         end
 
     local dropdown = CreateFrame("Frame", dropdown_name, opts["parent"], "UIDropDownMenuTemplate")
@@ -733,7 +764,7 @@ function Config:CreateDropdown(opts)
             local info = UIDropDownMenu_CreateInfo()
             for key, val in pairs(menu_items) do
                 info.text = key
-                info.checked = (ListLooterDB.settings.customFontName == key)
+                info.checked = (current_val() == key)
                 info.menuList = key
                 info.hasArrow = false
                 info.func = function(b)

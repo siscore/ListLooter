@@ -29,7 +29,7 @@ end
 
 
 function SettingsProvider:InterfaceOptionsFrame_OpenToCategory(settingsCategoryId, addonName)
-    print('InterfaceOptionsFrame_OpenToCategory')
+    -- print('InterfaceOptionsFrame_OpenToCategory')
     if (Settings ~= nil) then
         Settings.OpenToCategory(settingsCategoryId)
     else

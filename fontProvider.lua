@@ -15,7 +15,7 @@ local defaultFont = GameFontWhite:GetFont()
 -- Fonts if not LSM used
 function FontProvider:GetFontsList()
     local appName = core.Config:GetAppName()
-    local fontFolderName = "Interface\\AddOns\\" .. appName .. "\\Fonts\\"
+    local fontFolderName = "Interface\\AddOns\\" .. appName .. "\\fonts\\"
     return {
         Default = defaultFont,
         Enigmatic = fontFolderName .. "EnigmaU_2.ttf"
@@ -63,7 +63,7 @@ end
 
 function FontProvider:RegisterCustomFonts()
     local appName = core.Config:GetAppName()
-    local fontFolderName = "Interface\\AddOns\\" .. appName .. "\\Fonts\\"
+    local fontFolderName = "Interface\\AddOns\\" .. appName .. "\\fonts\\"
     local customFontsList = {
         Enigmatic = {
             fontFolderName .. "EnigmaU_2.ttf",

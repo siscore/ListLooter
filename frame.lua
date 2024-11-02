@@ -66,25 +66,20 @@ function Frame:Init()
     UIFrame:SetMovable(true)
     UIFrame:RegisterForClicks "anyup"
 
+    local config = core.Config:GetSettings();
+    local theme = core.ThemesProvider.getTheme(nil, config.theme);
+
     core.Override.ApplyBackdropA(
         nil,
         UIFrame,
-        {
-            bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-            tile = true,
-            tileSize = 16,
-            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-            edgeSize = 16,
-            insets = {
-                left = 4,
-                right = 4,
-                top = 4,
-                bottom = 4
-            }
-        }
+        theme.Frame.Backdrop
     )
 
-    UIFrame:SetBackdropColor(0, 0, 0, 0.8)
+    UIFrame:SetBackdropColor(
+        theme.Frame.BackdropColor.r, 
+        theme.Frame.BackdropColor.g, 
+        theme.Frame.BackdropColor.b,
+        theme.Frame.BackdropColor.alpha)
 
     UIFrame:SetClampedToScreen(true)
     UIFrame:SetClampRectInsets(0, 0, 14, 0)
@@ -373,8 +368,15 @@ function Frame:ShowLootList()
     end
     Frame:AnchorItemsFrames()
 
-    local color = ITEM_QUALITY_COLORS[maxLootQuality]
-    UIFrame:SetBackdropBorderColor(color.r, color.g, color.b, .8)
+    local config = core.Config:GetSettings();
+    local theme = core.ThemesProvider.getTheme(nil, config.theme);
+
+    if (theme.Frame.BackdropBorderColor == nil) then
+        local color = ITEM_QUALITY_COLORS[maxLootQuality]
+        UIFrame:SetBackdropBorderColor(color.r, color.g, color.b, .8)
+    else
+        UIFrame:SetBackdropBorderColor(theme.Frame.BackdropColor.r, theme.Frame.BackdropColor.g, theme.Frame.BackdropColor.b, theme.Frame.BackdropColor.alpha)
+    end
 
     Frame:UpdateWidth()
 
@@ -492,6 +494,26 @@ function Frame:LootFrameItemCleared(index)
 end
 
 function Frame:UpdateSettings()
+    local config = core.Config:GetSettings();
+    local theme = core.ThemesProvider.getTheme(nil, config.theme);
+
+    UIFrame:SetBackdropColor(
+        theme.Frame.BackdropColor.r, 
+        theme.Frame.BackdropColor.g, 
+        theme.Frame.BackdropColor.b,
+        theme.Frame.BackdropColor.alpha)
+
+        if (theme.Frame.BackdropBorderColor == nil) then
+            local color = ITEM_QUALITY_COLORS[maxLootQuality]
+            UIFrame:SetBackdropBorderColor(color.r, color.g, color.b, .8)
+        else
+            UIFrame:SetBackdropBorderColor(
+                theme.Frame.BackdropColor.r, 
+                theme.Frame.BackdropColor.g, 
+                theme.Frame.BackdropColor.b, 
+                theme.Frame.BackdropColor.alpha)
+        end
+
     for i = 1, table.getn(UIFrame.Items) do
         local frame = UIFrame.Items[i]
 
