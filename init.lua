@@ -122,7 +122,7 @@ function core:init(event, name)
     if (event == "LOOT_SLOT_CLEARED") then
         local config = core.Config:GetSettings()
         if (config.isLootFrame) then
-            core:Debug("LOOT_SLOT_CLEARED: index: " .. name)
+            --core:Debug("LOOT_SLOT_CLEARED: index: " .. name)
             core.Frame.LootFrameItemCleared("index", name)
         end
     end
@@ -135,7 +135,8 @@ function core:ShowTestFrame()
         core.Frame.CloseLootFrame()
         AddTestItem(182614, 1)
         AddTestItem(179350, 2)
-        AddTestItem(84101, 3)
+        AddTestItem(84101,  2)
+        AddTestItem(200165, 4)
         core.Frame.ShowLootList()
     end
 end
@@ -145,7 +146,7 @@ function AddTestItem(id, index)
     if (itemName == nil) then
         core:Debug("Item cache not ready...")
     else
-        core.Frame.AddItem("table", index, itemTexture, itemName, 1, nil, itemRarity, false, false, false, true)
+        core.Frame.AddItem("table", index, itemTexture, itemName, 2, nil, itemRarity, false, false, false, true, 999)
     end
 end
 
@@ -162,17 +163,19 @@ function core:Loot()
     end
     for i = 1, numLootItems, 1 do
         local itemLink = GetLootSlotLink(i)
+        local _, _, _, itemLevel = GetItemInfo(itemLink);
         local item = core.Frame.GetEmptyItem()
         item.index = i
         item.lootIcon,
-            item.lootName,
-            item.lootQuantity,
-            item.currencyID,
-            item.lootQuality,
-            item.locked,
-            item.isQuestItem,
-            item.questID,
-            item.isActive = GetLootSlotInfo(i)
+        item.lootName,
+        item.lootQuantity,
+        item.currencyID,
+        item.lootQuality,
+        item.locked,
+        item.isQuestItem,
+        item.questID,
+        item.isActive = GetLootSlotInfo(i)
+        item.itemLevel = itemLevel
 
         local ifLooted = false
 
@@ -187,8 +190,8 @@ function core:Loot()
                             info.maxQuantity >= (info.quantity + item.lootQuantity))
                      then
                         core:Debug(
-                            "Core:Loot(): Loot money or currency. Slot: " ..
-                                i .. " " .. item.lootIcon .. " " .. item.lootName
+                           "Core:Loot(): Loot money or currency. Slot: " ..
+                               i .. " " .. item.lootIcon .. " " .. item.lootName
                         )
                         LootSlot(i)
                         ifLooted = true
@@ -253,7 +256,8 @@ function core:Loot()
                 item.locked,
                 item.isQuestItem,
                 item.questID,
-                item.isActive
+                item.isActive,
+                item.itemLevel
             )
         end
     end
@@ -352,7 +356,7 @@ function core:DebugPrintTable(node)
     table.insert(output, output_str)
     output_str = table.concat(output)
 
-    core:Debug(output_str)
+    -- core:Debug(output_str)
 end
 
 local events = CreateFrame("Frame")

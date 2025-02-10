@@ -23,6 +23,7 @@ L_OPTIONS_FRAMEENABLE = "Replace default loot frame"
 L_OPTIONS_USECUSTOMFONT = "Use custom font"
 L_OPTIONS_CUSTOMFONTNAME = "Custom font"
 L_OPTIONS_CUSTOMTHEMENAME = "Theme"
+L_OPTIONS_SHOWITEMLEVEL = "Show item level"
 
 local clientLocale = GetLocale()
 
@@ -46,6 +47,7 @@ if clientLocale == "deDE" then
     L_OPTIONS_USECUSTOMFONT = "Use custom font"
     L_OPTIONS_CUSTOMFONTNAME = "Custom font"
     L_OPTIONS_CUSTOMTHEMENAME = "Theme"
+    L_OPTIONS_SHOWITEMLEVEL = "Show item level"
 elseif clientLocale == "esES" or clientLocale == "esMX" then
     L_WELCOMEBACK = "%s loaded (%d)"
 
@@ -66,6 +68,7 @@ elseif clientLocale == "esES" or clientLocale == "esMX" then
     L_OPTIONS_USECUSTOMFONT = "Use custom font"
     L_OPTIONS_CUSTOMFONTNAME = "Custom font"
     L_OPTIONS_CUSTOMTHEMENAME = "Theme"
+    L_OPTIONS_SHOWITEMLEVEL = "Show item level"
 elseif clientLocale == "frFR" then
     L_WELCOMEBACK = "%s chargé (%d)"
 
@@ -86,6 +89,7 @@ elseif clientLocale == "frFR" then
     L_OPTIONS_USECUSTOMFONT = "Use custom font"
     L_OPTIONS_CUSTOMFONTNAME = "Custom font"
     L_OPTIONS_CUSTOMTHEMENAME = "Theme"
+    L_OPTIONS_SHOWITEMLEVEL = "Show item level"
 elseif clientLocale == "ruRU" then
     L_WELCOMEBACK = "С возвращением."
 
@@ -106,4 +110,5 @@ elseif clientLocale == "ruRU" then
     L_OPTIONS_USECUSTOMFONT = "Использовать сторонний шрифт"
     L_OPTIONS_CUSTOMFONTNAME = "Шрифт"
     L_OPTIONS_CUSTOMTHEMENAME = "Тема"
+    L_OPTIONS_SHOWITEMLEVEL = "Показывать ilvl (требуется \\reload)"
 end

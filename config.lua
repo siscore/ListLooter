@@ -19,7 +19,8 @@ local defaults = {
         isMinimap = false,
         isLootFrame = false,
         isFishingLoot = false,
-        customFontName = "Default"
+        customFontName = "Default",
+        showItemLevel = false
     },
     theme = "Default",
     frame = {
@@ -380,6 +381,30 @@ function Config:UpdateSettings4()
     end
 end
 
+function Config:UpdateSettings5()
+    if (ListLooterDB.settings.showItemLevel == nil) then
+        local value1, value2, value3, value4, value5, value6, value7 =
+            ListLooterDB.settings.isLootEnable,
+            ListLooterDB.settings.isCurrency,
+            ListLooterDB.settings.isQuestItem,
+            ListLooterDB.settings.isAfterClose,
+            ListLooterDB.settings.isMinimap,
+            ListLooterDB.settings.isLootFrame,
+            ListLooterDB.settings.isFishingLoot
+
+        ListLooterDB.settings = {
+            isLootEnable = value1,
+            isCurrency = value2,
+            isQuestItem = value3,
+            isAfterClose = value4,
+            isMinimap = value5,
+            isLootFrame = value6,
+            isFishingLoot = value7,
+            showItemLevel = defaults.settings.showItemLevel
+        }
+    end
+end
+
 function Config:GetAppName()
     return appName
 end
@@ -411,6 +436,7 @@ function Config:CreateMenu()
     Config:UpdateSettings2()
     Config:UpdateSettings3()
     Config:UpdateSettings4()
+    Config:UpdateSettings5()
 
     if (ListLooterDB.frame == nil) then
         ListLooterDB.frame = defaults.frame
@@ -549,6 +575,18 @@ function Config:CreateMenu()
         end
     )
 
+    UIConfig.cbItemLevel = core.Override.CreateFrameA(nil, "CheckButton", nil, UIConfig, "UICheckButtonTemplate")
+    UIConfig.cbItemLevel:SetPoint("TOPLEFT", UIConfig.cbLootFrame, "BOTTOMLEFT")
+    UIConfig.cbItemLevel.text:SetText(L_OPTIONS_SHOWITEMLEVEL)
+    UIConfig.cbItemLevel:SetChecked(ListLooterDB.settings.showItemLevel)
+    UIConfig.cbItemLevel:SetScript(
+        "OnClick",
+        function(self, button, down)
+            ListLooterDB.settings.showItemLevel = self:GetChecked() and true or false
+            core.Frame:UpdateSettings()
+        end
+    )
+
     -- Slider 1:
     UIConfig.slider1 =
         Config:CreateSlider(
@@ -558,7 +596,7 @@ function Config:CreateMenu()
         50,
         ListLooterDB.frame.iconSize,
         "TOPLEFT",
-        UIConfig.cbLootFrame,
+        UIConfig.cbItemLevel,
         "BOTTOMLEFT",
         0,
         -20
@@ -584,7 +622,7 @@ function Config:CreateMenu()
         20,
         ListLooterDB.frame.fontSizeItem,
         "TOPLEFT",
-        UIConfig.cbLootFrame,
+        UIConfig.cbItemLevel,
         "BOTTOMLEFT",
         300,
         -20

@@ -25,7 +25,8 @@ local defaults = {
         locked = nil,
         isQuestItem = nil,
         questID = nil,
-        isActive = nil
+        isActive = nil,
+        itemLevel = 0
     },
     delta = 5
 }
@@ -136,6 +137,8 @@ function Frame:AddItem(...)
 
     local iconSize = ListLooterDB.frame.iconSize
 
+    local config = core.Config:GetSettings();
+
     item.index = lootInfo[1]
     item.lootIcon = lootInfo[2]
     item.lootName = lootInfo[3]
@@ -146,6 +149,7 @@ function Frame:AddItem(...)
     item.isQuestItem = lootInfo[8]
     item.questID = lootInfo[9]
     item.isActive = lootInfo[10]
+    item.itemLevel = lootInfo[11]
 
     local itemFrame = UIFrame.Items[item.index]
 
@@ -212,12 +216,23 @@ function Frame:AddItem(...)
 
         maxLootQuality = math.max(maxLootQuality, item.lootQuality)
 
+        if (item.itemLevel > 0 and config.showItemLevel) then
+            itemFrame.itemLevel:SetText("ilvl: " .. item.itemLevel)
+            itemFrame.itemLevel:SetTextColor(r, g, b, 0.8)
+            itemFrame.itemLevel:SetFont(fontCount, fontSizeItem * 0.75)
+            itemFrame.itemLevel:Show()
+        else
+            itemFrame.itemLevel:Hide()
+        end
+        
         itemFrame:Enable()
         itemFrame:Show()
     end
 end
 
 function Frame:CreateItemFrame(masqueGroup)
+    local config = core.Config:GetSettings();
+
     local iconSize = ListLooterDB.frame.iconSize
     local fontSizeItem = ListLooterDB.frame.fontSizeItem
     local fontSizeCount = ListLooterDB.frame.fontSizeCount
@@ -343,12 +358,26 @@ function Frame:CreateItemFrame(masqueGroup)
     local name = frame:CreateFontString(nil, "OVERLAY")
     name:SetFont(fontItem, fontSizeItem, nil)
     name:SetJustifyH "LEFT"
-    name:SetPoint("LEFT", frame)
+    if (config.showItemLevel) then
+        name:SetPoint("LEFT", frame, 0, fontSizeItem / 2)
+    else
+        name:SetPoint("LEFT", frame)
+    end
     name:SetPoint("RIGHT", iconFrame, "LEFT")
     name:SetNonSpaceWrap(true)
     name:SetShadowOffset(.8, -.8)
     name:SetShadowColor(0, 0, 0, 1)
     frame.name = name
+
+    local itemLevel = frame:CreateFontString(nil, "OVERLAY")
+    local itemLevelFontSize = fontSizeItem * 0.75;
+    itemLevel:SetFont(fontItem, itemLevelFontSize, nil)
+    itemLevel:SetJustifyH "LEFT"
+    itemLevel:SetPoint("TOPLEFT", name, "BOTTOMLEFT")
+    itemLevel:SetShadowOffset(.8, -.8)
+    itemLevel:SetShadowColor(0, 0, 0, 1)
+    itemLevel:SetText("ilvl")
+    frame.itemLevel = itemLevel
 
     local drop = frame:CreateTexture(nil, "ARTWORK")
     drop:SetTexture [[Interface\QuestFrame\UI-QuestLogTitleHighlight]]
@@ -417,13 +446,24 @@ function Frame:GetVisibleListItems()
 end
 
 function Frame:AnchorItemsFrames()
+    local config = core.Config:GetSettings();
     local frameSize = math.max(ListLooterDB.frame.iconSize, ListLooterDB.frame.fontSizeItem)
     local iconSize = ListLooterDB.frame.iconSize
     local shownSlots = 0
     local prevShown
 
+    if (config.showItemLevel) then 
+        frameSize = math.max(ListLooterDB.frame.iconSize, ListLooterDB.frame.fontSizeItem * 1.75)
+    else
+        frameSize = math.max(ListLooterDB.frame.iconSize, ListLooterDB.frame.fontSizeItem) 
+    end
+    
     if Masque then
-        frameSize = math.max(ListLooterDB.frame.iconSize + 4, ListLooterDB.frame.fontSizeItem)
+        if (config.showItemLevel) then 
+            frameSize = math.max(ListLooterDB.frame.iconSize + 4, ListLooterDB.frame.fontSizeItem * 1.75)
+        else
+            frameSize = math.max(ListLooterDB.frame.iconSize + 4, ListLooterDB.frame.fontSizeItem)
+        end
     end
 
     for i = 1, table.getn(UIFrame.Items) do
@@ -519,8 +559,13 @@ function Frame:UpdateSettings()
 
         frame.name:SetFont(core.FontProvider:GetFontName(), ListLooterDB.frame.fontSizeItem, nil)
         frame.count:SetFont(core.FontProvider:GetFontName(), ListLooterDB.frame.fontSizeCount, nil)
+        frame.itemLevel:SetFont(core.FontProvider:GetFontName(), ListLooterDB.frame.fontSizeItem * 0.75, nil)
 
-        frame:SetHeight(ListLooterDB.frame.iconSize)
+        if (config.showItemLevel) then
+            frame:SetHeight(math.max(ListLooterDB.frame.iconSize, ListLooterDB.frame.fontSizeItem * 1.75))
+        else
+            frame:SetHeight(math.max(ListLooterDB.frame.iconSize, ListLooterDB.frame.fontSizeItem))
+        end
 
         if Masque then
             frame.iconFrame:SetSize(ListLooterDB.frame.iconSize + 4, ListLooterDB.frame.iconSize + 4)
